@@ -18,6 +18,6 @@ class WhatPulseController extends Controller
 
     public function test(Request $request)
     {
-        return $this->whatpulse->connect("ryanmal");
+        return $this->whatpulse->connect("ryanmal")->responseBody;
     }
 }
