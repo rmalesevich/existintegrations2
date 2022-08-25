@@ -31,4 +31,14 @@ return [
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
 
+    // Configuration related to the integration with Exist
+    'exist' => [
+        'key' => 'exist',
+        'authUri' => 'https://exist.io/oauth2/authorize',
+        'tokenUri' => 'https://exist.io/oauth2/access_token',
+        'baseUri' => 'https://exist.io/api/2',
+        'scope' => 'finance_write+manual_write+media_write+productivity_write',
+        'maxUpdate' => 35
+    ]
+
 ];
