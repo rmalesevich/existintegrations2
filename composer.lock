@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "569aa85539a5e1e6dbb5d60284b10fdb",
+    "content-hash": "bdb7e1ebd020be8a45b9639fefc2dac6",
     "packages": [
         {
             "name": "brick/math",
@@ -432,6 +432,50 @@
                 }
             ],
             "time": "2022-06-18T20:57:19+00:00"
+        },
+        {
+            "name": "ekut/spatie-dto-validators",
+            "version": "v1.0.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/ekut/spatie-dto-validators.git",
+                "reference": "432b7433f4befdc33cceaa015c55e74b544af59c"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/ekut/spatie-dto-validators/zipball/432b7433f4befdc33cceaa015c55e74b544af59c",
+                "reference": "432b7433f4befdc33cceaa015c55e74b544af59c",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^8.0",
+                "spatie/data-transfer-object": "^3.7"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^9.5"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Ekut\\SpatieDtoValidators\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Alexander Yakutskiy",
+                    "email": "a.yakutskiy@gmail.com"
+                }
+            ],
+            "description": "Set of validators for the package spatie/data-transfer-object",
+            "support": {
+                "issues": "https://github.com/ekut/spatie-dto-validators/issues",
+                "source": "https://github.com/ekut/spatie-dto-validators/tree/v1.0.1"
+            },
+            "time": "2022-05-16T04:52:23+00:00"
         },
         {
             "name": "fruitcake/php-cors",

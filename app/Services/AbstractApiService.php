@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Objects\ApiRequestDTO;
+use App\Objects\ApiResponseDTO;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\ServerException;
@@ -24,23 +25,21 @@ abstract class AbstractApiService
      * All calls are logged using the default application logger. On return it will return an object that
      * can be processed.
      * 
-     * @param string $method (GET, POST, PUT, PATCH, DELETE)
-     * @param string $uri
-     * @param array $params
-     * @return ApiRequestDTO
+     * @param ApiRequestDTO $apiRequest
+     * @return ApiResponseDTO
      * 
      */
-    public function request(string $method, string $uri, array $params = []): ApiRequestDTO
+    public function request(ApiRequestDTO $apiRequest): ApiResponseDTO
     {
         $correlationId = (string) Str::uuid();
-        Log::info(sprintf("%s %s %s ", $correlationId, $method, $uri), $params);
+        Log::info(sprintf("%s %s %s ", $correlationId, $apiRequest->method, $apiRequest->uri), $apiRequest->params ?? array());
         
         $success = true;
         $statusCode = 0;
         $responseBody = null;
 
         try {
-            $request = $this->client->request($method, $uri, $params);
+            $request = $this->client->request($apiRequest->method, $apiRequest->uri, $apiRequest->params ?? array());
 
             $statusCode = $request->getStatusCode();
             $responseBody = json_decode($request->getBody(), true);
@@ -54,7 +53,7 @@ abstract class AbstractApiService
             Log::error(sprintf("%s ServerException %s", $correlationId, $exception->getMessage()));
         }
 
-        return new ApiRequestDTO(
+        return new ApiResponseDTO(
             success: $success,
             statusCode: $statusCode,
             responseBody: $responseBody
