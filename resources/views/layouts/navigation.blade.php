@@ -44,6 +44,15 @@
                     </x-slot>
                 </x-dropdown>
             </div>
+            @else
+
+            <div class="hidden sm:flex sm:items-center sm:ml-6">
+                @if (Route::has('login'))
+                    <a class="nav-link" href="{{ route('login') }}">{{ __('Login') }}</a>
+                @endif
+            </div>
+            
+            @endauth
 
             <!-- Hamburger -->
             <div class="-mr-2 flex items-center sm:hidden">
@@ -54,17 +63,17 @@
                     </svg>
                 </button>
             </div>
-            @endauth
-
+            
         </div>
     </div>
 
-    @auth
     <!-- Responsive Navigation Menu -->
     <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden">
 
+        
         <!-- Responsive Settings Options -->
         <div class="pt-4 pb-1 border-t border-gray-200">
+            @auth
             <div class="px-4">
                 <div class="font-medium text-base text-gray-800">{{ Auth::user()->name }}</div>
                 <div class="font-medium text-sm text-gray-500">{{ Auth::user()->email }}</div>
@@ -82,7 +91,15 @@
                     </x-responsive-nav-link>
                 </form>
             </div>
+            @else
+
+            <div class="px-4">
+                @if (Route::has('login'))
+                    <a class="nav-link" href="{{ route('login') }}">{{ __('Login') }}</a>
+                @endif
+            </div>
+
+            @endauth
         </div>
     </div>
-    @endauth
 </nav>
