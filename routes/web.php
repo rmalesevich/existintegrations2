@@ -36,3 +36,4 @@ Route::get('/services/whatpulse/test', [WhatPulseController::class, 'test']);
 // Exist Routes
 Route::get('/services/exist/connect', [ExistController:: class, 'connect'])->name('exist.connect');
 Route::get('/services/exist/connected', [ExistController::class, 'connected'])->name('exist.connected');
+Route::delete('/services/exist/disconnect', [ExistController::class, 'disconnect'])->name('exist.disconnect');

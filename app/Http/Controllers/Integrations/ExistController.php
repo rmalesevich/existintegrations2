@@ -18,6 +18,7 @@ class ExistController extends Controller
 
     /**
      * ROUTE: /services/exist/connect
+     * METHOD: GET
      * 
      * Redirect the user to the OAuth 2.0 URI for the authorization flow for Exist
      */
@@ -30,6 +31,7 @@ class ExistController extends Controller
 
     /**
      * ROUTE: /services/exist/connected
+     * METHOD: GET
      * 
      * Check on the response from the user in the Authorization request from Exist and respond accordingly.
      * 
@@ -44,7 +46,39 @@ class ExistController extends Controller
 
         // retrieve the code from Exist
         $code = $request->get('code');
+        if (!isset($code)) return redirect()->route('home');
 
-        echo $code;
+        $authorize = $this->exist->authorize(auth()->user(), $code);
+        if ($authorize->success) {
+            $successMessage = "Exist Integrations has successfully connected to your Exist account";
+        } else {
+            $errorMessage = $authorize->message ?? "Unknown error";
+        }
+
+        return redirect()->route('home')
+            ->with('successMessage', $successMessage ?? null)
+            ->with('errorMessage', $errorMessage ?? null);
+    }
+
+    /**
+     * ROUTE: /services/exist/disconnect
+     * METHOD: DELETE
+     * 
+     * Calls the disconnect method in the Exist Service to remove any data for this user
+     */
+    public function disconnect()
+    {
+        if (auth()->user()->existUser === null) return redirect()->route('home');
+
+        $disconnect = $this->exist->disconnect(auth()->user(), "User Initiated");
+        if ($disconnect->success) {
+            $successMessage = "Exist Integrations has been successfully disconnected from your Exist account.";
+        } else {
+            $errorMessage = $disconnect->message ?? "Unknown error";
+        }
+
+        return redirect()->route('home')
+            ->with('successMessage', $successMessage ?? null)
+            ->with('errorMessage', $errorMessage ?? null);
     }
 }

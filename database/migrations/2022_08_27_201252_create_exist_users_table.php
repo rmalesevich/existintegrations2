@@ -16,11 +16,11 @@ return new class extends Migration
         Schema::create('exist_users', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('user_id');
-            $table->string('username');
-            $table->string('timezone');
-            $table->string('access_token')->nullable();
-            $table->string('refresh_token')->nullable();
-            $table->timestamp('token_expires')->nullable();
+            $table->string('username')->nullable();
+            $table->string('timezone')->nullable();
+            $table->string('access_token');
+            $table->string('refresh_token');
+            $table->timestamp('token_expires');
             $table->timestamps();
 
             $table->foreign('user_id')
