@@ -41,4 +41,14 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    /**
+     * Retreive the ExistUser object associated with this User
+     * 
+     * @return ExistUser
+     */
+    public function existUser()
+    {
+        return $this->hasOne(ExistUser::class);
+    }
 }
