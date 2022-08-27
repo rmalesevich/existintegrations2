@@ -12,13 +12,6 @@ use Illuminate\Support\Str;
 
 abstract class AbstractApiService
 {
-    protected $client;
-
-    public function __construct(Client $client)
-    {
-        $this->client = $client;
-    }
-
     /**
      * Call the external API endpoint.
      * 
@@ -33,14 +26,17 @@ abstract class AbstractApiService
     {
         $correlationId = (string) Str::uuid();
         Log::info(sprintf("%s %s %s ", $correlationId, $apiRequest->method, $apiRequest->uri), $apiRequest->params ?? array());
+
+        $client = new Client();
         
-        $success = true;
+        $success = false;
         $statusCode = 0;
         $responseBody = null;
 
         try {
-            $request = $this->client->request($apiRequest->method, $apiRequest->uri, $apiRequest->params ?? array());
+            $request = $client->request($apiRequest->method, $apiRequest->uri, $apiRequest->params ?? array());
 
+            $success = true;
             $statusCode = $request->getStatusCode();
             $responseBody = json_decode($request->getBody(), true);
 
