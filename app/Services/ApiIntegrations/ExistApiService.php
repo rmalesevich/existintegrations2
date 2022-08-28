@@ -59,6 +59,35 @@ class ExistApiService extends AbstractApiService
     }
 
     /**
+     * Refresh the OAuth Access Token using the Refresh Token
+     * 
+     * @param string $refreshToken
+     * @return ExistOAuthTokenDTO
+     */
+    public function refreshToken(string $refreshToken): ?ExistOAuthTokenDTO
+    {
+        $apiRequest = new ApiRequestDTO(
+            method: 'POST',
+            uri: config('services.exist.tokenUri'),
+            params: [
+                'form_params' => [
+                    'grant_type' => 'refresh_token',
+                    'refresh_token' => $refreshToken,
+                    'client_id' => $this->clientId,
+                    'client_secret' => $this->clientSecret
+                ]
+            ]
+        );
+
+        $tokenResponse = $this->request($apiRequest);
+        if ($tokenResponse->success || $tokenResponse->responseBody !== null) {
+            return new ExistOAuthTokenDTO($tokenResponse->responseBody);
+        } else {
+            return null;
+        }
+    }
+
+    /**
      * Retrieve the Account Profile from the Exist API.
      * Documentation Reference: https://developer.exist.io/reference/users/
      * 

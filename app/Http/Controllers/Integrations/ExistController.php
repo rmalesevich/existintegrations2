@@ -48,11 +48,11 @@ class ExistController extends Controller
         $code = $request->get('code');
         if (!isset($code)) return redirect()->route('home');
 
-        $authorize = $this->exist->authorize(auth()->user(), $code);
-        if ($authorize->success) {
+        $authorizeResponse = $this->exist->authorize(auth()->user(), $code);
+        if ($authorizeResponse->success) {
             $successMessage = "Exist Integrations has successfully connected to your Exist account";
         } else {
-            $errorMessage = $authorize->message ?? "Unknown error";
+            $errorMessage = $authorizeResponse->message ?? "Unknown error";
         }
 
         return redirect()->route('home')
@@ -78,6 +78,44 @@ class ExistController extends Controller
         }
 
         return redirect()->route('home')
+            ->with('successMessage', $successMessage ?? null)
+            ->with('errorMessage', $errorMessage ?? null);
+    }
+
+    /**
+     * ROUTE: /services/exist/manage
+     * METHOD: GET
+     * 
+     * Display the manage Exist service view for the end user
+     */
+    public function manage()
+    {
+        if (auth()->user()->existUser === null) return redirect()->route('home');
+
+        return view('manage.exist', [
+            'user' => auth()->user()
+        ]);
+    }
+
+    /** 
+     * ROUTE: /services/exist/updateAccountProfile
+     * METHOD: POST
+     * 
+     * Retrieve the Account Profile from Exist and persist the data in the exist_users table.
+     */
+    public function updateAccountProfile()
+    {
+        if (auth()->user()->existUser === null) return redirect()->route('home');
+
+        $updateAccountProfileResponse = $this->exist->updateAccountProfile(auth()->user());
+
+        if ($updateAccountProfileResponse->success) {
+            $successMessage = "Exist Integrations has pulled your latest Account Profile from Exist";
+        } else {
+            $errorMessage = $updateAccountProfileResponse->message ?? "Unknown error";
+        }
+
+        return redirect()->route('exist.manage')
             ->with('successMessage', $successMessage ?? null)
             ->with('errorMessage', $errorMessage ?? null);
     }
