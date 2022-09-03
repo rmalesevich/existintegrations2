@@ -39,6 +39,19 @@ return [
         'baseUri' => 'https://exist.io/api/2',
         'scope' => 'finance_write+manual_write+media_write+productivity_write',
         'maxUpdate' => 35
+    ],
+
+    // Configurations related to the integration with WhatPulse
+    'whatpulse' => [
+        'baseUri' => 'https://api.whatpulse.org'
+    ],
+
+    // Array with all of the officially supported integrations
+    'integrations' => [
+        [
+            'service' => 'whatpulse',
+            'enabled' => true
+        ]
     ]
 
 ];
