@@ -31,6 +31,8 @@ return [
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
 
+    'roadmapUri' => 'https://changemap.co/exist-integrations/exist-integrations/',
+
     // Configuration related to the integration with Exist
     'exist' => [
         'key' => 'exist',
@@ -50,6 +52,10 @@ return [
     'integrations' => [
         [
             'service' => 'whatpulse',
+            'userMethod' => 'whatPulseUser',
+            'outputName' => 'WhatPulse',
+            'logo' => '/images/whatpulse.png',
+            'description' => 'WhatPulse measures your computer usage through keyboard/mouse usage, bandwidth, and uptime. This data is available through their API so it can be mapped to Exist attributes and populated through Exist Integrations.',
             'enabled' => true
         ]
     ]

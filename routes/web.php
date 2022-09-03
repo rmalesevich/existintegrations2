@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\HomeController;
+use App\Http\Controllers\IntegrationController;
 use App\Http\Controllers\Integrations\ExistController;
 use App\Http\Controllers\Integrations\WhatPulseController;
 use Illuminate\Support\Facades\Route;
@@ -26,7 +26,9 @@ Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth'])->name('dashboard');
 
-Route::get('/home', [HomeController::class, 'index'])->name('home');
+// Integration Routes (Home Status, Add)
+Route::get('/home', [IntegrationController::class, 'home'])->name('home');
+Route::get('/add', [IntegrationController::class, 'add'])->name('add');
 
 require __DIR__.'/auth.php';
 

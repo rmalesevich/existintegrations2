@@ -38,6 +38,21 @@ class User extends Authenticatable
     }
 
     /**
+     * Returns if the passed in integration is enabled for this User
+     * 
+     * @param string $integration
+     * @return bool
+     */
+    public function integrationEnabled(string $integration): bool
+    {
+        if (function_exists($this->$integration)) {
+            return empty($this->$integration);
+        }
+
+        return false;
+    }
+
+    /**
      * Retrieve the WhatPulseUser object associated with this User
      * 
      * @return WhatPulseUser

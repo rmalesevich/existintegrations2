@@ -22,8 +22,6 @@
                     </div>
                 @endif
 
-
-
                     <div class="border m-4 p-4">
                         <div class="float-right">
                             <form action="{{ route('exist.manage') }}" method="get">
@@ -46,7 +44,16 @@
                         </div>
                     </div>
 
-                    
+                    <div class="m-4 p-4">
+                        <div class="float-right">
+                            <form action="{{ route('add') }}" method="get">
+                                @csrf
+                                <button type="submit" class="inline-block px-6 py-2 border-2 border-purple-600 text-purple-600 font-medium text-xs leading-tight uppercase rounded hover:bg-black hover:bg-opacity-5 focus:outline-none focus:ring-0 transition duration-150 ease-in-out">
+                                    + Add New Integration
+                                </button>
+                            </form>
+                        </div>
+                    </div>
 
                 </div>
             </div>
