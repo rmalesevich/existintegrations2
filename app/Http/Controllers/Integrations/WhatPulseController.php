@@ -16,8 +16,43 @@ class WhatPulseController extends Controller
         $this->whatpulse = $whatpulse;
     }
 
-    public function test(Request $request)
+    /**
+     * ROUTE: /services/whatpulse/connect
+     * METHOD: POST
+     */
+    public function connect(Request $request)
     {
-        return $this->whatpulse->connect("ryanmal")->responseBody;
+        if (auth()->user()->existUser === null) return redirect()->route('home');
+
+        if (auth()->user()->whatpulseUser != null) {
+            return redirect()->route('home')
+                ->with('errorMessage', 'A WhatPulse account is already connected to your user');
+        }
+
+        $this->validate($request, [
+            'whatpulseAccountName' => 'required'
+        ], [
+            'whatpulseAccountName.required' => 'WhatPulse Account Name is required'
+        ]);
+
+        $whatpulseAccountName = $request->whatpulseAccountName;
+
+        $connect = $this->whatpulse->connect(auth()->user(), $whatpulseAccountName);
+
+        if ($connect->success) {
+            return redirect()->route('whatpulse.manage');
+        } else {
+            return redirect()->route('add')
+                ->with('errorMessage', $connect->message);
+        }
+    }
+
+    /**
+     * ROUTE: /services/whatpulse/manage
+     * METHOD: GET
+     */
+    public function manage()
+    {
+        dd("To implement");
     }
 }

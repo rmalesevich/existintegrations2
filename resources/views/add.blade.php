@@ -22,18 +22,30 @@
                     </div>
                 @endif
 
+                @if ($errors->any())
+                    <div class="bg-red-100 rounded-lg py-5 px-6 mb-4 text-base text-red-700 mb-3">
+                        <ul>
+                            @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
+
                 @php
                     $availableIntegrations = 0
                 @endphp
 
                 @foreach ($integrations->where('enabled', true) as $integration)
-                    @if (!$user->integrationEnabled($integration['service']))
+                    @if ($user->integrationEnabled($integration['service']))
                     <div class="m-4 p-4">
                         <img src="{{ $integration['logo'] }}" alt="{{ $integration['outputName'] }} Logo" class="mb-4">
 
                         <p class="mb-4">
                             {{ $integration['description'] }}
                         </p>
+
+                        @include('add.' . $integration['service'])
                     </div>
 
                         @php

@@ -51,7 +51,7 @@ class ExistApiService extends AbstractApiService
         );
 
         $tokenResponse = $this->request($apiRequest);
-        if ($tokenResponse->success || $tokenResponse->responseBody !== null) {
+        if ($tokenResponse->success && $tokenResponse->responseBody !== null) {
             return new ExistOAuthTokenDTO($tokenResponse->responseBody);
         } else {
             return null;
@@ -80,7 +80,7 @@ class ExistApiService extends AbstractApiService
         );
 
         $tokenResponse = $this->request($apiRequest);
-        if ($tokenResponse->success || $tokenResponse->responseBody !== null) {
+        if ($tokenResponse->success && $tokenResponse->responseBody !== null) {
             return new ExistOAuthTokenDTO($tokenResponse->responseBody);
         } else {
             return null;
@@ -107,7 +107,7 @@ class ExistApiService extends AbstractApiService
         );
 
         $accountProfileResponse = $this->request($apiRequest);
-        if ($accountProfileResponse->success || $accountProfileResponse->responseBody !== null) {
+        if ($accountProfileResponse->success && $accountProfileResponse->responseBody !== null) {
             return new ExistAccountProfileDTO($accountProfileResponse->responseBody);
         } else {
             return null;

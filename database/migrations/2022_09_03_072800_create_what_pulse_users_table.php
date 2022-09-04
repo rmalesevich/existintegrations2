@@ -17,7 +17,6 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('user_id');
             $table->string('account_name');
-            $table->datetime('last_pulse');
             $table->timestamps();
 
             $table->foreign('user_id')

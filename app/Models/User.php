@@ -45,11 +45,14 @@ class User extends Authenticatable
      */
     public function integrationEnabled(string $integration): bool
     {
-        if (function_exists($this->$integration)) {
-            return empty($this->$integration);
+        switch ($integration) {
+            case "whatpulse":
+                return empty($this->whatPulseUser());
+                break;
+            default:
+                return false;
+                break;
         }
-
-        return false;
     }
 
     /**
