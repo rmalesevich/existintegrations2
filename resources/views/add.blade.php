@@ -37,7 +37,7 @@
                 @endphp
 
                 @foreach ($integrations->where('enabled', true) as $integration)
-                    @if ($user->integrationEnabled($integration['service']))
+                    @if (!$user->integrationEnabled($integration['service']))
                     <div class="m-4 p-4">
                         <img src="{{ $integration['logo'] }}" alt="{{ $integration['outputName'] }} Logo" class="mb-4">
 

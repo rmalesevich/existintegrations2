@@ -45,7 +45,40 @@ return [
 
     // Configurations related to the integration with WhatPulse
     'whatpulse' => [
-        'baseUri' => 'https://api.whatpulse.org'
+        'baseUri' => 'https://api.whatpulse.org',
+        'attributes' => [
+            [
+                'attribute' => 'keystrokes',
+                'template' => 'keystrokes',
+                'label' => 'Keystrokes',
+                'group' => 'productivity',
+                'value_type' => 3
+            ], [
+                'attribute' => 'mouse_clicks',
+                'template' => null,
+                'label' => 'Mouse Clicks',
+                'group' => 'productivity',
+                'value_type' => 0
+            ], [
+                'attribute' => 'download',
+                'template' => null,
+                'label' => 'Download MB',
+                'group' => 'productivity',
+                'value_type' => 0
+            ], [
+                'attribute' => 'upload',
+                'template' => null,
+                'label' => 'Upload MB',
+                'group' => 'productivity',
+                'value_type' => 0
+            ], [
+                'attribute' => 'uptime',
+                'template' => null,
+                'label' => 'Uptime Minutes',
+                'group' => 'productivity',
+                'value_type' => 3
+            ]
+        ]
     ],
 
     // Array with all of the officially supported integrations

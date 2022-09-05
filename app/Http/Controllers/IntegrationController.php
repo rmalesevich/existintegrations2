@@ -14,7 +14,8 @@ class IntegrationController extends Controller
         if (!empty(auth()->user()->existUser->id)) {
             // Configure and display the home page for a user already connected to Exist
             return view('home', [
-                'user' => auth()->user()
+                'user' => auth()->user(),
+                'integrations' => collect(config('services.integrations'))
             ]);
         } else {
             // User is not already connected to Exist

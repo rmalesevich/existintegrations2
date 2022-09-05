@@ -48,11 +48,38 @@ class WhatPulseController extends Controller
     }
 
     /**
+     * ROUTE: /services/whatpulse/disconnect
+     * METHOD: DELETE
+     * 
+     * Calls the disconnect method in the WhatPulse Service to remove data for this year
+     */
+    public function disconnect()
+    {
+        if (auth()->user()->existUser === null) return redirect()->route('home');
+
+        $disconnect = $this->whatpulse->disconnect(auth()->user(), "User Initiated");
+        if ($disconnect->success) {
+            $successMessage = "Exist Integrations has been successfully disconnected from your WhatPulse account";
+        } else {
+            $errorMessage = $disconnect->message ?? "Unknown error";
+        }
+
+        return redirect()->route('home')
+            ->with('successMessage', $successMessage ?? null)
+            ->with('errorMessage', $errorMessage ?? null);
+    }
+
+    /**
      * ROUTE: /services/whatpulse/manage
      * METHOD: GET
      */
     public function manage()
     {
-        dd("To implement");
+        if (auth()->user()->existUser === null) return redirect()->route('home');
+
+        return view('manage.whatpulse', [
+            'user' => auth()->user(),
+            'attributes' => collect(config('services.whatpulse.attributes'))
+        ]);
     }
 }

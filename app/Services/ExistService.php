@@ -62,7 +62,7 @@ class ExistService
     }
 
     /**
-     * Disconnect Exist from this user by removing any data associated with it
+     * Disconnect Exist Integrations from this user by removing any data associated with it
      * 
      * @param User $user
      * @param string $trigger

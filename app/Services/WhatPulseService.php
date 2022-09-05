@@ -6,6 +6,7 @@ use App\Models\User;
 use App\Models\WhatPulseUser;
 use App\Objects\StandardDTO;
 use App\Services\ApiIntegrations\WhatPulseApiService;
+use Illuminate\Support\Facades\Log;
 
 class WhatPulseService
 {
@@ -46,6 +47,24 @@ class WhatPulseService
             'account_name' => $userDetailsResponse->AccountName
         ]);
 
+        return new StandardDTO(
+            success: true
+        );
+    }
+
+    /**
+     * Disconnect Exist Integrations from this user by removing any data associated with it
+     * 
+     * @param User $user
+     * @param string $trigger
+     * @return StandardDTO
+     */
+    public function disconnect(User $user, string $trigger = ""): StandardDTO
+    {
+        WhatPulseUser::find($user->whatPulseUser->id)->delete();
+
+        Log::info(sprintf("EXIST DISCONNECT: User ID %s via trigger %s", $user->id, $trigger));
+        
         return new StandardDTO(
             success: true
         );

@@ -47,7 +47,7 @@ class User extends Authenticatable
     {
         switch ($integration) {
             case "whatpulse":
-                return empty($this->whatPulseUser());
+                return ($this->whatPulseUser !== null);
                 break;
             default:
                 return false;
@@ -60,7 +60,7 @@ class User extends Authenticatable
      * 
      * @return WhatPulseUser
      */
-    public function whatPulseUser()
+    public function whatpulseUser()
     {
         return $this->hasOne(WhatPulseUser::class);
     }

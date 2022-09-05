@@ -20,4 +20,9 @@ class WhatPulseUser extends Model
     {
         return $this->belongsTo(User::class, 'user_id');
     }
+
+    public function getUserAttribute($user)
+    {
+        return $this->account_name;
+    }
 }
