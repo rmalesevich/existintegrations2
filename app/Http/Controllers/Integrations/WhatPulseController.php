@@ -79,7 +79,7 @@ class WhatPulseController extends Controller
 
         return view('manage.whatpulse', [
             'user' => auth()->user(),
-            'userAttributes' => auth()->user()->attributes->where('integration', 'whatpulse'),
+            'userAttributes' => auth()->user()->attributes->where('integration', 'whatpulse')->where('user_id', auth()->user()->id),
             'attributes' => collect(config('services.whatpulse.attributes'))
         ]);
     }
@@ -95,7 +95,9 @@ class WhatPulseController extends Controller
         $attributes = array();
         foreach (collect(config('services.whatpulse.attributes')) as $attribute) {
             if ($request[$attribute['attribute']] !== null) {
-                array_push($attributes, $attribute['attribute']);
+                array_push($attributes, [
+                        'attribute' => $attribute['attribute']
+                ]);
             }
         }
 

@@ -6,6 +6,7 @@ use App\Models\User;
 use App\Models\UserAttribute;
 use App\Models\WhatPulseUser;
 use App\Objects\StandardDTO;
+use App\Services\ApiIntegrations\ExistApiService;
 use App\Services\ApiIntegrations\WhatPulseApiService;
 use Illuminate\Support\Facades\Log;
 
@@ -13,9 +14,10 @@ class WhatPulseService
 {
     public $api;
 
-    public function __construct(WhatPulseApiService $api)
+    public function __construct(WhatPulseApiService $api, ExistApiService $exist)
     {
         $this->api = $api;
+        $this->exist = $exist;
     }
 
     /**
@@ -83,18 +85,86 @@ class WhatPulseService
      */
     public function setAttributes(User $user, array $attributes): StandardDTO
     {
-        // Delete any records that aren't in the passed in attributes
-        UserAttribute::where('integration', 'whatpulse')
-            ->whereNotIn('attribute', $attributes)
-            ->delete();
+        $attributeList = collect(config('services.whatpulse.attributes'));
+        $acquireAttributeBody = array();
+        $releaseAttributeBody = array();
+        $createAttributeBody = array();
 
-        foreach ($attributes as $attribute) {
-            // Add the records to the UserAttribute table
-            UserAttribute::updateOrCreate([
-                'user_id' => $user->id,
-                'integration' => 'whatpulse',
-                'attribute' => $attribute
-            ]);
+        $attributes = collect($attributes);
+
+        // collect the attributes into the appropriate bodies for the Exist API calls
+        foreach ($attributeList as $attributeDetail) {
+            $attribute = $attributes->where('attribute', $attributeDetail['attribute']);
+
+            if ($attribute->count() === 1) {
+                if (UserAttribute::where('user_id', $user->id)->where('integration', 'whatpulse')->where('attribute', $attributeDetail['attribute'])->count() === 0) {
+                    if ($attributeDetail['template']) {
+                        array_push($acquireAttributeBody, [
+                            'template' => $attributeDetail['attribute']
+                        ]);
+                    } else {
+                        array_push($createAttributeBody, [
+                            'label' => $attributeDetail['label'],
+                            'group' => $attributeDetail['group'],
+                            'value_type' => $attributeDetail['value_type']
+                        ]);
+                    }
+                }
+            } else {
+                $check = UserAttribute::where('user_id', $user->id)
+                    ->where('integration', 'whatpulse')
+                    ->where('attribute', $attributeDetail['attribute']);
+
+                if ($check->count() === 1) {
+                    if ($attributeDetail['template']) {
+                        array_push($releaseAttributeBody, [
+                            'name' => $attributeDetail['attribute']
+                        ]);
+                    }
+                    $check->delete();
+                }
+            }
+        }
+
+        // Aquire the official templates
+        if (count($acquireAttributeBody) > 0) {
+            $acquireAttributeResponse = $this->exist->acquireAttribute($user, $acquireAttributeBody);
+            foreach ($acquireAttributeResponse->success as $success) {
+                UserAttribute::updateOrCreate([
+                    'user_id' => $user->id,
+                    'integration' => 'whatpulse',
+                    'attribute' => $success['template']
+                ]);
+            }
+        }
+        
+        // Release the official templates
+        if (count($releaseAttributeBody) > 0) {
+            $releaseAttributeBody = $this->exist->releaseAttribute($user, $releaseAttributeBody);
+        }
+
+        // Create the new custom attributes
+        if (count($createAttributeBody) > 0) {
+            $createAttributeResponse = $this->exist->createAttribute($user, $createAttributeBody);
+
+            foreach ($createAttributeResponse->success as $success) {
+                UserAttribute::updateOrCreate([
+                    'user_id' => $user->id,
+                    'integration' => 'whatpulse',
+                    'attribute' => $success['name']
+                ]);
+            }
+
+            // If the attribute has been created it will fail when trying to re-add it
+            foreach ($createAttributeResponse->failed as $failure) {
+                if ($failure['error_code'] === "exists") {
+                    UserAttribute::updateOrCreate([
+                        'user_id' => $user->id,
+                        'integration' => 'whatpulse',
+                        'attribute' => $failure['name']
+                    ]);
+                }
+            }
         }
         
         return new StandardDTO(

@@ -60,19 +60,19 @@ return [
                 'group' => 'productivity',
                 'value_type' => 0
             ], [
-                'attribute' => 'download',
+                'attribute' => 'download_mb',
                 'template' => null,
                 'label' => 'Download MB',
                 'group' => 'productivity',
                 'value_type' => 0
             ], [
-                'attribute' => 'upload',
+                'attribute' => 'upload_mb',
                 'template' => null,
                 'label' => 'Upload MB',
                 'group' => 'productivity',
                 'value_type' => 0
             ], [
-                'attribute' => 'uptime',
+                'attribute' => 'uptime_minutes',
                 'template' => null,
                 'label' => 'Uptime Minutes',
                 'group' => 'productivity',

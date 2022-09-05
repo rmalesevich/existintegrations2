@@ -5,6 +5,7 @@ namespace App\Services\ApiIntegrations;
 use App\Models\User;
 use App\Objects\ApiRequestDTO;
 use App\Objects\Exist\ExistAccountProfileDTO;
+use App\Objects\Exist\ExistAttributeDTO;
 use App\Objects\Exist\ExistOAuthTokenDTO;
 use App\Services\AbstractApiService;
 
@@ -109,6 +110,93 @@ class ExistApiService extends AbstractApiService
         $accountProfileResponse = $this->request($apiRequest);
         if ($accountProfileResponse->success && $accountProfileResponse->responseBody !== null) {
             return new ExistAccountProfileDTO($accountProfileResponse->responseBody);
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * Acquire the standard attributes held within the attribute body with Exist
+     * Documentation Reference: https://developer.exist.io/reference/attribute_ownership/#acquire-attributes
+     * 
+     * @param User $user
+     * @param array $attributeBody
+     * @return ExistAttributeDTO
+     */
+    public function acquireAttribute(User $user, array $attributeBody): ?ExistAttributeDTO
+    {
+        $apiRequest = new ApiRequestDTO(
+            method: 'POST',
+            uri: config('services.exist.baseUri') . '/attributes/acquire/',
+            params: [
+                'headers' => [
+                    'Authorization' => 'Bearer ' . $user->existUser->access_token
+                ],
+                'json' => $attributeBody
+            ]
+        );
+
+        $acquireAttributeResponse = $this->request($apiRequest);
+        if ($acquireAttributeResponse->success && $acquireAttributeResponse->responseBody !== null) {
+            return new ExistAttributeDTO($acquireAttributeResponse->responseBody);
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * Release the standard attributes held within the attribute body with Exist
+     * Documentation Reference: https://developer.exist.io/reference/attribute_ownership/#request
+     * 
+     * @param User $user
+     * @param array $attributeBody
+     * @return ExistAttributeDTO
+     */
+    public function releaseAttribute(User $user, array $attributeBody): ?ExistAttributeDTO
+    {
+        $apiRequest = new ApiRequestDTO(
+            method: 'POST',
+            uri: config('services.exist.baseUri') . '/attributes/release/',
+            params: [
+                'headers' => [
+                    'Authorization' => 'Bearer ' . $user->existUser->access_token
+                ],
+                'json' => $attributeBody
+            ]
+        );
+
+        $releaseAttributeResponse = $this->request($apiRequest);
+        if ($releaseAttributeResponse->success && $releaseAttributeResponse->responseBody !== null) {
+            return new ExistAttributeDTO($releaseAttributeResponse->responseBody);
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * Create a new Attribute in Exist
+     * Documentation Reference: https://developer.exist.io/reference/creating_attributes/#parameters
+     * 
+     * @param User $user
+     * @param array $attributeBody
+     * @return ExistAttributeDTO
+     */
+    public function createAttribute(User $user, array $attributeBody): ?ExistAttributeDTO
+    {
+        $apiRequest = new ApiRequestDTO(
+            method: 'POST',
+            uri: config('services.exist.baseUri') . '/attributes/create/',
+            params: [
+                'headers' => [
+                    'Authorization' => 'Bearer ' . $user->existUser->access_token
+                ],
+                'json' => $attributeBody
+            ]
+        );
+
+        $createAttributeResponse = $this->request($apiRequest);
+        if ($createAttributeResponse->success && $createAttributeResponse->responseBody !== null) {
+            return new ExistAttributeDTO($createAttributeResponse->responseBody);
         } else {
             return null;
         }
