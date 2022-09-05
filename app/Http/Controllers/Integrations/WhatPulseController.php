@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Integrations;
 
 use App\Http\Controllers\Controller;
+use App\Services\ExistService;
 use App\Services\WhatPulseService;
 use Illuminate\Http\Request;
 
@@ -10,10 +11,11 @@ class WhatPulseController extends Controller
 {
     private $whatpulse;
 
-    public function __construct(WhatPulseService $whatpulse)
+    public function __construct(WhatPulseService $whatpulse, ExistService $exist)
     {
         $this->middleware('auth');
         $this->whatpulse = $whatpulse;
+        $this->exist = $exist;
     }
 
     /**
@@ -96,13 +98,12 @@ class WhatPulseController extends Controller
         foreach (collect(config('services.whatpulse.attributes')) as $attribute) {
             if ($request[$attribute['attribute']] !== null) {
                 array_push($attributes, [
-                        'attribute' => $attribute['attribute']
+                    'attribute' => $attribute['attribute']
                 ]);
             }
         }
 
-        $setAttributesResponse = $this->whatpulse->setAttributes(auth()->user(), $attributes);
-
+        $setAttributesResponse = $this->exist->setAttributes(auth()->user(), 'whatpulse', $attributes);
         if ($setAttributesResponse->success) {
             $successMessage = "Exist Integrations has set up your attributes and requested an update of your data";
         } else {
