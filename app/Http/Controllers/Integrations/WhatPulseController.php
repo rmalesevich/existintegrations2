@@ -112,7 +112,7 @@ class WhatPulseController extends Controller
 
         return redirect()->route('whatpulse.manage')
             ->with('successMessage', $successMessage ?? null)
-            ->with('errorMessage', $errorMessage ?? null);
-            
+            ->with('errorMessage', $errorMessage ?? null);    
     }
+
 }

@@ -3,6 +3,7 @@
 namespace App\Services\ApiIntegrations;
 
 use App\Objects\ApiRequestDTO;
+use App\Objects\WhatPulse\WhatPulsePulseDTO;
 use App\Objects\WhatPulse\WhatPulseUserDTO;
 use App\Services\AbstractApiService;
 
@@ -11,6 +12,9 @@ class WhatPulseApiService extends AbstractApiService
     /**
      * Retrieve the account details from the WhatPulse User API.
      * Documentation Reference: https://help.whatpulse.org/api/web-api#user-stats
+     * 
+     * @param string $accountName
+     * @return WhatPulseUserDTO
      */
     public function getUserDetails(string $accountName): ?WhatPulseUserDTO
     {
@@ -22,6 +26,27 @@ class WhatPulseApiService extends AbstractApiService
         $userDetailResponse = $this->request($apiRequest);
         if ($userDetailResponse->success && $userDetailResponse->responseBody !== null) {
             return new WhatPulseUserDTO($userDetailResponse->responseBody);
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * Retrieve the pulses from the WhatPulse Pulses API.
+     * Documentation Reference: https://help.whatpulse.org/api/web-api/#pulse-stats
+     * 
+     * @param string $accountName
+     */
+    public function getPulses(string $accountName): ?WhatPulsePulseDTO
+    {
+        $apiRequest = new ApiRequestDTO(
+            method: 'GET',
+            uri: 'https://api.whatpulse.org/pulses.php?format=json&user=' . $accountName
+        );
+
+        $pulseResponse = $this->request($apiRequest);
+        if ($pulseResponse->success && $pulseResponse->responseBody !== null) {
+            return WhatPulsePulseDTO::fromRequest($pulseResponse->responseBody);
         } else {
             return null;
         }
