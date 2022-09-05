@@ -64,4 +64,14 @@ class User extends Authenticatable
     {
         return $this->hasOne(WhatPulseUser::class);
     }
+
+    /**
+     * Returns all attributes linked to this User
+     * 
+     * @return UserAttribute
+     */
+    public function attributes()
+    {
+        return $this->hasMany(UserAttribute::class);
+    }
 }

@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\User;
+use App\Models\UserAttribute;
 use App\Models\WhatPulseUser;
 use App\Objects\StandardDTO;
 use App\Services\ApiIntegrations\WhatPulseApiService;
@@ -61,9 +62,40 @@ class WhatPulseService
      */
     public function disconnect(User $user, string $trigger = ""): StandardDTO
     {
-        WhatPulseUser::find($user->whatPulseUser->id)->delete();
+        WhatPulseUser::where('id', $user->whatPulseUser->id)->delete();
+        UserAttribute::where('user_id', $user->id)
+            ->where('integration', 'whatpulse')
+            ->delete();
 
         Log::info(sprintf("EXIST DISCONNECT: User ID %s via trigger %s", $user->id, $trigger));
+        
+        return new StandardDTO(
+            success: true
+        );
+    }
+
+    /**
+     * Connect these attributes to Exist and store in the database
+     * 
+     * @param User $user
+     * @param array $attributes
+     * @return StandardDTO
+     */
+    public function setAttributes(User $user, array $attributes): StandardDTO
+    {
+        // Delete any records that aren't in the passed in attributes
+        UserAttribute::where('integration', 'whatpulse')
+            ->whereNotIn('attribute', $attributes)
+            ->delete();
+
+        foreach ($attributes as $attribute) {
+            // Add the records to the UserAttribute table
+            UserAttribute::updateOrCreate([
+                'user_id' => $user->id,
+                'integration' => 'whatpulse',
+                'attribute' => $attribute
+            ]);
+        }
         
         return new StandardDTO(
             success: true

@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\ExistUser;
 use App\Models\User;
+use App\Models\UserAttribute;
 use App\Objects\StandardDTO;
 use App\Services\ApiIntegrations\ExistApiService;
 use Illuminate\Support\Facades\Log;
@@ -70,7 +71,9 @@ class ExistService
      */
     public function disconnect(User $user, string $trigger = ""): StandardDTO
     {
-        ExistUser::find($user->existUser->id)->delete();
+        ExistUser::where('id', $user->existUser->id)->delete();
+        UserAttribute::where('user_id', $user->id)
+            ->delete();
 
         Log::info(sprintf("EXIST DISCONNECT: User ID %s via trigger %s", $user->id, $trigger));
         

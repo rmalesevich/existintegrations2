@@ -55,7 +55,7 @@ class WhatPulseController extends Controller
      */
     public function disconnect()
     {
-        if (auth()->user()->existUser === null) return redirect()->route('home');
+        if (auth()->user()->existUser === null || auth()->user()->whatPulseUser === null) return redirect()->route('home');
 
         $disconnect = $this->whatpulse->disconnect(auth()->user(), "User Initiated");
         if ($disconnect->success) {
@@ -75,11 +75,41 @@ class WhatPulseController extends Controller
      */
     public function manage()
     {
-        if (auth()->user()->existUser === null) return redirect()->route('home');
+        if (auth()->user()->existUser === null || auth()->user()->whatPulseUser === null) return redirect()->route('home');
 
         return view('manage.whatpulse', [
             'user' => auth()->user(),
+            'userAttributes' => auth()->user()->attributes->where('integration', 'whatpulse'),
             'attributes' => collect(config('services.whatpulse.attributes'))
         ]);
+    }
+
+    /**
+     * ROUTE: /services/whatpulse/setAttributes
+     * METHOD: POST
+     */
+    public function setAttributes(Request $request)
+    {
+        if (auth()->user()->existUser === null || auth()->user()->whatPulseUser === null) return redirect()->route('home');
+
+        $attributes = array();
+        foreach (collect(config('services.whatpulse.attributes')) as $attribute) {
+            if ($request[$attribute['attribute']] !== null) {
+                array_push($attributes, $attribute['attribute']);
+            }
+        }
+
+        $setAttributesResponse = $this->whatpulse->setAttributes(auth()->user(), $attributes);
+
+        if ($setAttributesResponse->success) {
+            $successMessage = "Exist Integrations has set up your attributes and requested an update of your data";
+        } else {
+            $errorMessage = $setAttributesResponse->message ?? "Unknown error";
+        }
+
+        return redirect()->route('whatpulse.manage')
+            ->with('successMessage', $successMessage ?? null)
+            ->with('errorMessage', $errorMessage ?? null);
+            
     }
 }

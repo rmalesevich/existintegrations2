@@ -43,3 +43,4 @@ Route::post('/services/exist/updateAccountProfile', [ExistController::class, 'up
 Route::post('/services/whatpulse/connect', [WhatPulseController::class, 'connect'])->name('whatpulse.connect');
 Route::delete('/services/whatpulse/disconnect', [WhatPulseController::class, 'disconnect'])->name('whatpulse.disconnect');
 Route::get('/services/whatpulse/manage', [WhatPulseController::class, 'manage'])->name('whatpulse.manage');
+Route::post('/services/whatpulse/setAttributes', [WhatPulseController::class, 'setAttributes'])->name('whatpulse.setAttributes');
