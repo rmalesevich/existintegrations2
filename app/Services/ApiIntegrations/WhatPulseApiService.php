@@ -32,16 +32,19 @@ class WhatPulseApiService extends AbstractApiService
     }
 
     /**
-     * Retrieve the pulses from the WhatPulse Pulses API.
+     * Retrieve the pulses from the WhatPulse Pulses API within the Timestamp range
      * Documentation Reference: https://help.whatpulse.org/api/web-api/#pulse-stats
      * 
      * @param string $accountName
+     * @param string $start
+     * @param string $end
+     * @return WhatPulsePulseDTO
      */
-    public function getPulses(string $accountName): ?WhatPulsePulseDTO
+    public function getPulses(string $accountName, string $start, string $end): ?WhatPulsePulseDTO
     {
         $apiRequest = new ApiRequestDTO(
             method: 'GET',
-            uri: 'https://api.whatpulse.org/pulses.php?format=json&user=' . $accountName
+            uri: 'https://api.whatpulse.org/pulses.php?format=json&user=' . $accountName . '&start=' . $start . '&end=' . $end
         );
 
         $pulseResponse = $this->request($apiRequest);
