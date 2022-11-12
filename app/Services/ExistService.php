@@ -71,6 +71,9 @@ class ExistService
      */
     public function disconnect(User $user, string $trigger = ""): StandardDTO
     {
+        $whatpulse = app(WhatPulseService::class);
+        $whatpulse->disconnect($user, "Exist disconnect");
+        
         ExistUser::where('id', $user->existUser->id)->delete();
         UserAttribute::where('user_id', $user->id)
             ->delete();

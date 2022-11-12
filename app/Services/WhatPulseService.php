@@ -66,12 +66,15 @@ class WhatPulseService
      */
     public function disconnect(User $user, string $trigger = ""): StandardDTO
     {
-        WhatPulseUser::where('id', $user->whatPulseUser->id)->delete();
+        WhatPulsePulses::where('user_id', $user->id)
+            ->delete();
         UserAttribute::where('user_id', $user->id)
             ->where('integration', 'whatpulse')
             ->delete();
-
-        Log::info(sprintf("EXIST DISCONNECT: User ID %s via trigger %s", $user->id, $trigger));
+        WhatPulseUser::where('id', $user->whatPulseUser->id)
+            ->delete();
+        
+        Log::info(sprintf("WHATPULSE DISCONNECT: User ID %s via trigger %s", $user->id, $trigger));
         
         return new StandardDTO(
             success: true
