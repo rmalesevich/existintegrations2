@@ -72,7 +72,7 @@ class ExistController extends Controller
 
         $disconnect = $this->exist->disconnect(auth()->user(), "User Initiated");
         if ($disconnect->success) {
-            $successMessage = "Exist Integrations has been successfully disconnected from your Exist account.";
+            $successMessage = "Exist Integrations has been successfully disconnected from your Exist account";
         } else {
             $errorMessage = $disconnect->message ?? "Unknown error";
         }

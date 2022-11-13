@@ -5,7 +5,9 @@ namespace App\Services\ApiIntegrations;
 use App\Models\User;
 use App\Objects\ApiRequestDTO;
 use App\Objects\Exist\ExistAccountProfileDTO;
+use App\Objects\Exist\ExistAttributeDTO;
 use App\Objects\Exist\ExistOAuthTokenDTO;
+use App\Objects\Exist\ExistStatusDTO;
 use App\Services\AbstractApiService;
 
 class ExistApiService extends AbstractApiService
@@ -51,7 +53,7 @@ class ExistApiService extends AbstractApiService
         );
 
         $tokenResponse = $this->request($apiRequest);
-        if ($tokenResponse->success || $tokenResponse->responseBody !== null) {
+        if ($tokenResponse->success && $tokenResponse->responseBody !== null) {
             return new ExistOAuthTokenDTO($tokenResponse->responseBody);
         } else {
             return null;
@@ -80,7 +82,7 @@ class ExistApiService extends AbstractApiService
         );
 
         $tokenResponse = $this->request($apiRequest);
-        if ($tokenResponse->success || $tokenResponse->responseBody !== null) {
+        if ($tokenResponse->success && $tokenResponse->responseBody !== null) {
             return new ExistOAuthTokenDTO($tokenResponse->responseBody);
         } else {
             return null;
@@ -107,8 +109,153 @@ class ExistApiService extends AbstractApiService
         );
 
         $accountProfileResponse = $this->request($apiRequest);
-        if ($accountProfileResponse->success || $accountProfileResponse->responseBody !== null) {
+        if ($accountProfileResponse->success && $accountProfileResponse->responseBody !== null) {
             return new ExistAccountProfileDTO($accountProfileResponse->responseBody);
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * Acquire the standard attributes held within the attribute body with Exist
+     * Documentation Reference: https://developer.exist.io/reference/attribute_ownership/#acquire-attributes
+     * 
+     * @param User $user
+     * @param array $attributeBody
+     * @return ExistAttributeDTO
+     */
+    public function acquireAttribute(User $user, array $attributeBody): ?ExistAttributeDTO
+    {
+        $apiRequest = new ApiRequestDTO(
+            method: 'POST',
+            uri: config('services.exist.baseUri') . '/attributes/acquire/',
+            params: [
+                'headers' => [
+                    'Authorization' => 'Bearer ' . $user->existUser->access_token
+                ],
+                'json' => $attributeBody
+            ]
+        );
+
+        $acquireAttributeResponse = $this->request($apiRequest);
+        if ($acquireAttributeResponse->success && $acquireAttributeResponse->responseBody !== null) {
+            return new ExistAttributeDTO($acquireAttributeResponse->responseBody);
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * Release the standard attributes held within the attribute body with Exist
+     * Documentation Reference: https://developer.exist.io/reference/attribute_ownership/#request
+     * 
+     * @param User $user
+     * @param array $attributeBody
+     * @return ExistAttributeDTO
+     */
+    public function releaseAttribute(User $user, array $attributeBody): ?ExistAttributeDTO
+    {
+        $apiRequest = new ApiRequestDTO(
+            method: 'POST',
+            uri: config('services.exist.baseUri') . '/attributes/release/',
+            params: [
+                'headers' => [
+                    'Authorization' => 'Bearer ' . $user->existUser->access_token
+                ],
+                'json' => $attributeBody
+            ]
+        );
+
+        $releaseAttributeResponse = $this->request($apiRequest);
+        if ($releaseAttributeResponse->success && $releaseAttributeResponse->responseBody !== null) {
+            return new ExistAttributeDTO($releaseAttributeResponse->responseBody);
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * Create a new Attribute in Exist
+     * Documentation Reference: https://developer.exist.io/reference/creating_attributes/#parameters
+     * 
+     * @param User $user
+     * @param array $attributeBody
+     * @return ExistAttributeDTO
+     */
+    public function createAttribute(User $user, array $attributeBody): ?ExistAttributeDTO
+    {
+        $apiRequest = new ApiRequestDTO(
+            method: 'POST',
+            uri: config('services.exist.baseUri') . '/attributes/create/',
+            params: [
+                'headers' => [
+                    'Authorization' => 'Bearer ' . $user->existUser->access_token
+                ],
+                'json' => $attributeBody
+            ]
+        );
+
+        $createAttributeResponse = $this->request($apiRequest);
+        if ($createAttributeResponse->success && $createAttributeResponse->responseBody !== null) {
+            return new ExistAttributeDTO($createAttributeResponse->responseBody);
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * Use the Update endpoint to update the values to Exist
+     * Documentation Reference: https://developer.exist.io/reference/writing_data/#update-attribute-values
+     * 
+     * @param User $user
+     * @param array $payload
+     * @return ExistStatusDTO
+     */
+    public function updateAttributeValue(User $user, array $payload): ?ExistStatusDTO
+    {
+        $apiRequest = new ApiRequestDTO(
+            method: 'POST',
+            uri: config('services.exist.baseUri') . '/attributes/update/',
+            params: [
+                'headers' => [
+                    'Authorization' => 'Bearer ' . $user->existUser->access_token
+                ],
+                'json' => $payload
+            ]
+        );
+
+        $updateAttributeResponse = $this->request($apiRequest);
+        if ($updateAttributeResponse->success && $updateAttributeResponse->responseBody !== null) {
+            return new ExistStatusDTO($updateAttributeResponse->responseBody);
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * Use the Increment endpoint to update the values to Exist
+     * Documentation Reference: https://developer.exist.io/reference/writing_data/#increment-attribute-values
+     * 
+     * @param User $user
+     * @param array $payload
+     * @return ExistStatusDTO
+     */
+    public function incrementAttributeValue(User $user, array $payload): ?ExistStatusDTO
+    {
+        $apiRequest = new ApiRequestDTO(
+            method: 'POST',
+            uri: config('services.exist.baseUri') . '/attributes/increment/',
+            params: [
+                'headers' => [
+                    'Authorization' => 'Bearer ' . $user->existUser->access_token
+                ],
+                'json' => $payload
+            ]
+        );
+
+        $incrementAttributeResponse = $this->request($apiRequest);
+        if ($incrementAttributeResponse->success && $incrementAttributeResponse->responseBody !== null) {
+            return new ExistStatusDTO($incrementAttributeResponse->responseBody);
         } else {
             return null;
         }

@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\HomeController;
+use App\Http\Controllers\IntegrationController;
 use App\Http\Controllers\Integrations\ExistController;
 use App\Http\Controllers\Integrations\WhatPulseController;
 use Illuminate\Support\Facades\Route;
@@ -26,16 +26,22 @@ Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth'])->name('dashboard');
 
-Route::get('/home', [HomeController::class, 'index'])->name('home');
+// Integration Routes (Home Status, Add)
+Route::get('/home', [IntegrationController::class, 'home'])->name('home');
+Route::get('/add', [IntegrationController::class, 'add'])->name('add');
 
 require __DIR__.'/auth.php';
 
-// test route
-Route::get('/services/whatpulse/test', [WhatPulseController::class, 'test']);
-
 // Exist Routes
-Route::get('/services/exist/connect', [ExistController:: class, 'connect'])->name('exist.connect');
+Route::get('/services/exist/connect', [ExistController::class, 'connect'])->name('exist.connect');
 Route::get('/services/exist/connected', [ExistController::class, 'connected'])->name('exist.connected');
 Route::delete('/services/exist/disconnect', [ExistController::class, 'disconnect'])->name('exist.disconnect');
 Route::get('/services/exist/manage', [ExistController::class, 'manage'])->name('exist.manage');
 Route::post('/services/exist/updateAccountProfile', [ExistController::class, 'updateAccountProfile'])->name('exist.updateAccountProfile');
+
+// WhatPulse Routes
+Route::post('/services/whatpulse/connect', [WhatPulseController::class, 'connect'])->name('whatpulse.connect');
+Route::delete('/services/whatpulse/disconnect', [WhatPulseController::class, 'disconnect'])->name('whatpulse.disconnect');
+Route::get('/services/whatpulse/manage', [WhatPulseController::class, 'manage'])->name('whatpulse.manage');
+Route::post('/services/whatpulse/setAttributes', [WhatPulseController::class, 'setAttributes'])->name('whatpulse.setAttributes');
+Route::get('/services/whatpulse/zero', [WhatPulseController::class, 'zero'])->name('whatpulse.zero');

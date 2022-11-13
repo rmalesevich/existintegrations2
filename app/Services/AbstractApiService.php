@@ -40,7 +40,7 @@ abstract class AbstractApiService
             $statusCode = $request->getStatusCode();
             $responseBody = json_decode($request->getBody(), true);
 
-            Log::debug($correlationId, $responseBody);
+            Log::debug($correlationId, $responseBody ?? array());
         } catch (ClientException $exception) {
             $statusCode = $exception->getResponse()->getStatusCode();
             Log::error(sprintf("%s ClientException %s", $correlationId, $exception->getMessage()));

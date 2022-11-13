@@ -31,6 +31,8 @@ return [
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
 
+    'roadmapUri' => 'https://changemap.co/exist-integrations/exist-integrations/',
+
     // Configuration related to the integration with Exist
     'exist' => [
         'key' => 'exist',
@@ -39,6 +41,50 @@ return [
         'baseUri' => 'https://exist.io/api/2',
         'scope' => 'finance_write+manual_write+media_write+productivity_write',
         'maxUpdate' => 35
+    ],
+
+    // Configurations related to the integration with WhatPulse
+    'whatpulse' => [
+        'baseUri' => 'https://api.whatpulse.org',
+        'attributes' => [
+            [
+                'attribute' => 'keystrokes',
+                'template' => 'keystrokes',
+                'label' => 'Keystrokes',
+                'group' => 'productivity',
+                'value_type' => 3
+            ], [
+                'attribute' => 'mouse_clicks',
+                'template' => null,
+                'label' => 'Mouse Clicks',
+                'group' => 'productivity',
+                'value_type' => 0
+            ], [
+                'attribute' => 'download_mb',
+                'template' => null,
+                'label' => 'Download MB',
+                'group' => 'productivity',
+                'value_type' => 0
+            ], [
+                'attribute' => 'upload_mb',
+                'template' => null,
+                'label' => 'Upload MB',
+                'group' => 'productivity',
+                'value_type' => 0
+            ]
+        ]
+    ],
+
+    // Array with all of the officially supported integrations
+    'integrations' => [
+        [
+            'service' => 'whatpulse',
+            'userMethod' => 'whatPulseUser',
+            'outputName' => 'WhatPulse',
+            'logo' => '/images/whatpulse.png',
+            'description' => 'WhatPulse measures your computer usage through keyboard/mouse usage, bandwidth, and uptime. This data is available through their API so it can be mapped to Exist attributes and populated through Exist Integrations.',
+            'enabled' => true
+        ]
     ]
 
 ];
