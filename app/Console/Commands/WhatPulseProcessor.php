@@ -41,7 +41,7 @@ class WhatPulseProcessor extends Command
      *
      * @return int
      */
-    public function handle(Logger $logger, ExistService $exist, WhatPulseService $whatpulse)
+    public function handle(Logger $logger, WhatPulseService $whatpulse)
     {
         $correlationId = (string) Str::uuid();
         $logger->info($correlationId . " beginning WhatPulseProcessor");
@@ -52,6 +52,8 @@ class WhatPulseProcessor extends Command
 
         foreach ($users as $user) {
             $whatpulse->processPulses($user);
+
+            $whatpulse->sendToExist($user);
         }
 
         $logger->info($correlationId . " finished WhatPulseProcessor");

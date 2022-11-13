@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Integrations;
 
 use App\Http\Controllers\Controller;
+use App\Models\WhatPulsePulses;
 use App\Services\ExistService;
 use App\Services\WhatPulseService;
 use Illuminate\Http\Request;
@@ -113,6 +114,25 @@ class WhatPulseController extends Controller
         return redirect()->route('whatpulse.manage')
             ->with('successMessage', $successMessage ?? null)
             ->with('errorMessage', $errorMessage ?? null);    
+    }
+
+    /**
+     * ROUTE: /services/whatpulse/zero
+     * METHOD: GET
+     */
+    public function zero()
+    {
+        if (auth()->user()->existUser === null || auth()->user()->whatPulseUser === null) return redirect()->route('home');
+
+        $this->whatpulse->sendToExist(auth()->user(), true);
+
+        WhatPulsePulses::where('user_id', auth()->user()->id)
+            ->update([
+                'sent_to_exist' => false
+            ]);
+
+        return redirect()->route('whatpulse.manage')
+            ->with('successMessage', "WhatPulse attributes have been reset on Exist.");
     }
 
 }

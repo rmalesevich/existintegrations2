@@ -63,6 +63,18 @@
                         </div>
                     </div>
 
+                    <div class="mb-8">
+                        <div class="text-sm text-gray-900">
+                            <p>
+                                If you are experiencing issues with your WhatPulse data on Exist you can zero out your data on the Exist service.
+                                The next time the data refrehes from Exist Integrations it should then correct the data.
+                            </p>
+                            <p>
+                                <a href="{{ route('whatpulse.zero') }}">Zero out WhatPulse data on Exist</a>
+                            </p>
+                        </div>
+                    </div>
+
                     <div class="flex space-x-2 justify-center">
                         <div>
                             <form action="{{ route('whatpulse.disconnect') }}" method="post">

@@ -23,7 +23,6 @@ return new class extends Migration
             $table->integer('mouse_clicks');
             $table->integer('download_mb');
             $table->integer('upload_mb');
-            $table->integer('uptime_minutes');
             $table->boolean('sent_to_exist')->default(false);
             $table->timestamps();
 

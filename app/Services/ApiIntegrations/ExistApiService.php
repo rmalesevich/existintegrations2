@@ -7,6 +7,7 @@ use App\Objects\ApiRequestDTO;
 use App\Objects\Exist\ExistAccountProfileDTO;
 use App\Objects\Exist\ExistAttributeDTO;
 use App\Objects\Exist\ExistOAuthTokenDTO;
+use App\Objects\Exist\ExistStatusDTO;
 use App\Services\AbstractApiService;
 
 class ExistApiService extends AbstractApiService
@@ -197,6 +198,64 @@ class ExistApiService extends AbstractApiService
         $createAttributeResponse = $this->request($apiRequest);
         if ($createAttributeResponse->success && $createAttributeResponse->responseBody !== null) {
             return new ExistAttributeDTO($createAttributeResponse->responseBody);
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * Use the Update endpoint to update the values to Exist
+     * Documentation Reference: https://developer.exist.io/reference/writing_data/#update-attribute-values
+     * 
+     * @param User $user
+     * @param array $payload
+     * @return ExistStatusDTO
+     */
+    public function updateAttributeValue(User $user, array $payload): ?ExistStatusDTO
+    {
+        $apiRequest = new ApiRequestDTO(
+            method: 'POST',
+            uri: config('services.exist.baseUri') . '/attributes/update/',
+            params: [
+                'headers' => [
+                    'Authorization' => 'Bearer ' . $user->existUser->access_token
+                ],
+                'json' => $payload
+            ]
+        );
+
+        $updateAttributeResponse = $this->request($apiRequest);
+        if ($updateAttributeResponse->success && $updateAttributeResponse->responseBody !== null) {
+            return new ExistStatusDTO($updateAttributeResponse->responseBody);
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * Use the Increment endpoint to update the values to Exist
+     * Documentation Reference: https://developer.exist.io/reference/writing_data/#increment-attribute-values
+     * 
+     * @param User $user
+     * @param array $payload
+     * @return ExistStatusDTO
+     */
+    public function incrementAttributeValue(User $user, array $payload): ?ExistStatusDTO
+    {
+        $apiRequest = new ApiRequestDTO(
+            method: 'POST',
+            uri: config('services.exist.baseUri') . '/attributes/increment/',
+            params: [
+                'headers' => [
+                    'Authorization' => 'Bearer ' . $user->existUser->access_token
+                ],
+                'json' => $payload
+            ]
+        );
+
+        $incrementAttributeResponse = $this->request($apiRequest);
+        if ($incrementAttributeResponse->success && $incrementAttributeResponse->responseBody !== null) {
+            return new ExistStatusDTO($incrementAttributeResponse->responseBody);
         } else {
             return null;
         }

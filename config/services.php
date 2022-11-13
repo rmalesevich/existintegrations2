@@ -71,12 +71,6 @@ return [
                 'label' => 'Upload MB',
                 'group' => 'productivity',
                 'value_type' => 0
-            ], [
-                'attribute' => 'uptime_minutes',
-                'template' => null,
-                'label' => 'Uptime Minutes',
-                'group' => 'productivity',
-                'value_type' => 3
             ]
         ]
     ],
