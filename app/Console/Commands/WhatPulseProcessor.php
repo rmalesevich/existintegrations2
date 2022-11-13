@@ -2,6 +2,8 @@
 
 namespace App\Console\Commands;
 
+use App\Models\User;
+use App\Models\WhatPulseUser;
 use App\Services\ExistService;
 use App\Services\WhatPulseService;
 use Illuminate\Console\Command;
@@ -41,6 +43,17 @@ class WhatPulseProcessor extends Command
      */
     public function handle(Logger $logger, ExistService $exist, WhatPulseService $whatpulse)
     {
-        echo "Hello!";
+        $correlationId = (string) Str::uuid();
+        $logger->info($correlationId . " beginning WhatPulseProcessor");
+
+        $users = User::has('existUser')
+            ->has('whatpulseUser')
+            ->get();
+
+        foreach ($users as $user) {
+            $whatpulse->processPulses($user);
+        }
+
+        $logger->info($correlationId . " finished WhatPulseProcessor");
     }
 }
