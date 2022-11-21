@@ -44,4 +44,4 @@ Route::post('/services/whatpulse/connect', [WhatPulseController::class, 'connect
 Route::delete('/services/whatpulse/disconnect', [WhatPulseController::class, 'disconnect'])->name('whatpulse.disconnect');
 Route::get('/services/whatpulse/manage', [WhatPulseController::class, 'manage'])->name('whatpulse.manage');
 Route::post('/services/whatpulse/setAttributes', [WhatPulseController::class, 'setAttributes'])->name('whatpulse.setAttributes');
-Route::get('/services/whatpulse/zero', [WhatPulseController::class, 'zero'])->name('whatpulse.zero');
+Route::post('/services/whatpulse/zero', [WhatPulseController::class, 'zero'])->name('whatpulse.zero');

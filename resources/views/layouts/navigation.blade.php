@@ -9,6 +9,9 @@
                         <x-application-logo class="block h-10 w-auto fill-current text-gray-600" />
                     </a>
                     <span class="ml-4">
+                        <a href="{{ route('home') }}" class="text-blue-600 hover:text-blue-700 transition duration-300 ease-in-out mb-4">Exist Integrations</a>
+                    </span>
+                    <span class="ml-4">
                         Send more data to Exist
                     </span>
                 </div>

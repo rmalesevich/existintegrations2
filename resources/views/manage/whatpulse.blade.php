@@ -22,13 +22,19 @@
                     </div>
                 @endif
 
-                    <div class="mb-8">
-                        <div class="text-sm text-gray-900">
-                            <p>Connected as: {{ $user->whatpulseUser->user }}</p>
-                        </div>
+                    <div class="float-right">
+                        <a href="{{ route('home') }}" class="inline-block px-6 py-2 border-2 border-blue-600 text-blue-600 font-medium text-xs leading-tight uppercase rounded hover:bg-black hover:bg-opacity-5 focus:outline-none focus:ring-0 transition duration-150 ease-in-out">
+                            Back to Home
+                        </a>
                     </div>
 
                     <div class="mb-8">
+                        <h3 class="font-semibold text-xl text-gray-800 leading-tight mb-4">
+                            Connected as: {{ $user->whatpulseUser->user }}
+                        </h3>
+                    </div>
+
+                    <div class="mb-12">
                         <div class="text-sm text-gray-900">
                             <h3 class="font-semibold text-xl text-gray-800 leading-tight mb-4">
                                 Configure the Attributes to send to Exist
@@ -56,34 +62,46 @@
                                 <button 
                                     type="submit" 
                                     title="The included attributes from WhatPulse will be sent regularly to Exist"
-                                    class="inline-block px-6 py-2.5 bg-purple-600 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-purple-700 hover:shadow-lg focus:bg-purple-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-purple-800 active:shadow-lg transition duration-150 ease-in-out">
+                                    class="inline-block px-6 py-2.5 bg-green-500 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-green-600 hover:shadow-lg focus:bg-green-600 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-green-700 active:shadow-lg transition duration-150 ease-in-out">
                                     Set the Attributes from WhatPulse to send to Exist
                                 </button>
                             </form>
                         </div>
                     </div>
 
-                    <div class="mb-8">
+                    <div class="mb-4">
+                        <h3 class="font-semibold text-xl text-gray-800 leading-tight mb-4">
+                            Correct Data Issues
+                        </h3>
+                    </div>
+
+                    <div class="mb-12">
                         <div class="text-sm text-gray-900">
-                            <p>
-                                If you are experiencing issues with your WhatPulse data on Exist you can zero out your data on the Exist service.
-                                The next time the data refrehes from Exist Integrations it should then correct the data.
+                            <p class="mb-4">
+                                If you are experiencing issues with the data that has been sent to Exist, you can trigger Exist Integrations to zero out the data for the attributes that are configured. On the next processing of your data, it should correct the values.
                             </p>
-                            <p>
-                                <a href="{{ route('whatpulse.zero') }}">Zero out WhatPulse data on Exist</a>
-                            </p>
+                            <form action="{{ route('whatpulse.zero') }}" method="post">
+                                @csrf
+                                <button 
+                                    type="submit" 
+                                    onclick="return confirm('Are you sure you want to zero out your data for these attributes?');"
+                                    class="inline-block px-6 py-2.5 bg-yellow-500 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-yellow-600 hover:shadow-lg focus:bg-yellow-600 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-yellow-700 active:shadow-lg transition duration-150 ease-in-out">
+                                    Zero out WhatPulse data on Exist
+                                </button>
+                            </form>
                         </div>
                     </div>
 
-                    <div class="flex space-x-2 justify-center">
-                        <div>
+                    <div class="mb-4 pb-4">
+                        <div class="float-right">
                             <form action="{{ route('whatpulse.disconnect') }}" method="post">
                                 @method('DELETE')
                                 @csrf
                                 <button 
                                     type="submit" 
                                     title="If you disconnect your Exist Integrations account from WhatPulse, all data stored within Exist Integrations to support sending 3rd party data to Exist will be permanently deleted."
-                                    class="inline-block px-6 py-2 border-2 border-red-600 text-red-600 font-medium text-xs leading-tight uppercase rounded-full hover:bg-black hover:bg-opacity-5 focus:outline-none focus:ring-0 transition duration-150 ease-in-out">
+                                    onclick="return confirm('Are you sure you want to disconnect this integration?');"
+                                    class="inline-block px-6 py-2.5 bg-red-600 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-red-700 hover:shadow-lg focus:bg-red-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-red-800 active:shadow-lg transition duration-150 ease-in-out">
                                     Disconnect Exist Integrations from WhatPulse
                                 </button>
                             </form>
