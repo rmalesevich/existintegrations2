@@ -5,23 +5,22 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class WhatPulsePulses extends Model
+class UserData extends Model
 {
     use HasFactory;
 
-    protected $table = 'whatpulse_pulses';
+    protected $table = 'user_data';
 
     protected $fillable = [
         'user_id',
-        'pulse_id',
+        'service',
+        'service_id',
+        'attribute',
         'date_id',
-        'pulse_date',
-        'keystrokes',
-        'mouse_clicks',
-        'download_mb',
-        'upload_mb',
-        'uptime_minutes',
-        'sent_to_exist'
+        'value',
+        'sent_to_exist',
+        'response_date',
+        'response'
     ];
 
     public function user()

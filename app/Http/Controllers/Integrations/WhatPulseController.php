@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\Integrations;
 
 use App\Http\Controllers\Controller;
+use App\Models\UserAttribute;
 use App\Models\WhatPulsePulses;
+use App\Models\WhatPulseUser;
 use App\Services\ExistService;
 use App\Services\WhatPulseService;
 use Illuminate\Http\Request;
@@ -104,9 +106,17 @@ class WhatPulseController extends Controller
             }
         }
 
-        $setAttributesResponse = $this->exist->setAttributes(auth()->user(), 'whatpulse', $attributes);
+        $setAttributesResponse = $this->exist->setAttributes(auth()->user(), 'whatpulse', $attributes, auth()->user()->whatpulseUser->is_new);
         if ($setAttributesResponse->success) {
-            $successMessage = "Exist Integrations has set up your attributes and requested an update of your data";
+            $successMessage = "Exist Integrations has set up your attributes";
+
+            if (auth()->user()->whatpulseUser->is_new) {
+                WhatPulseUser::where('user_id', auth()->user()->id)
+                    ->update([
+                        'is_new' => false
+                    ]);
+            }
+
         } else {
             $errorMessage = $setAttributesResponse->message ?? "Unknown error";
         }
@@ -118,21 +128,23 @@ class WhatPulseController extends Controller
 
     /**
      * ROUTE: /services/whatpulse/zero
-     * METHOD: GET
+     * METHOD: POST
      */
     public function zero()
     {
         if (auth()->user()->existUser === null || auth()->user()->whatPulseUser === null) return redirect()->route('home');
 
-        $this->whatpulse->sendToExist(auth()->user(), true);
+        $days = config('services.baseDays');
+        $userAttributes = UserAttribute::where('user_id', auth()->user()->id)
+            ->where('integration', 'whatpulse')
+            ->get();
 
-        WhatPulsePulses::where('user_id', auth()->user()->id)
-            ->update([
-                'sent_to_exist' => false
-            ]);
+        foreach ($userAttributes as $attribute) {
+            $this->exist->zeroUserData(auth()->user(), 'whatpulse', $attribute->attribute, $days);
+        }
 
         return redirect()->route('whatpulse.manage')
-            ->with('successMessage', "WhatPulse attributes have been reset on Exist.");
+            ->with('successMessage', "WhatPulse attributes will be reset for the last $days days");
     }
 
 }

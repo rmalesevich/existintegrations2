@@ -13,7 +13,8 @@ class WhatPulseUser extends Model
 
     protected $fillable = [
         'user_id',
-        'account_name'
+        'account_name',
+        'is_new'
     ];
 
     public function user()

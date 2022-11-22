@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Models\User;
+use App\Models\UserData;
 use App\Models\WhatPulseUser;
 use App\Services\ExistService;
 use App\Services\WhatPulseService;
@@ -53,7 +54,20 @@ class WhatPulseProcessor extends Command
         foreach ($users as $user) {
             $whatpulse->processPulses($user);
 
-            $whatpulse->sendToExist($user);
+            // process any zero out requests to Exist
+            $whatpulse->sendToExist($user, true);
+
+            // send the data to Exist
+            $whatpulse->sendToExist($user, false);
+
+            // delete user data older than the base days
+            $days = config('services.baseDays');
+            $maxDate = date("Y-m-d", strtotime("-$days days"));
+
+            UserData::where('user_id', $user->id)
+                ->where('service', 'whatpulse')
+                ->where('date_id', '<', $maxDate)
+                ->delete();
         }
 
         $logger->info($correlationId . " finished WhatPulseProcessor");
