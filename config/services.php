@@ -33,6 +33,8 @@ return [
 
     'roadmapUri' => 'https://changemap.co/exist-integrations/exist-integrations/',
 
+    'baseDays' => 3,
+
     // Configuration related to the integration with Exist
     'exist' => [
         'key' => 'exist',
@@ -45,6 +47,7 @@ return [
 
     // Configurations related to the integration with WhatPulse
     'whatpulse' => [
+        'key' => 'whatpulse',
         'baseUri' => 'https://api.whatpulse.org',
         'attributes' => [
             [

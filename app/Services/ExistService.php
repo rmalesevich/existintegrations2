@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\ExistUser;
 use App\Models\User;
 use App\Models\UserAttribute;
+use App\Models\UserData;
 use App\Objects\StandardDTO;
 use App\Services\ApiIntegrations\ExistApiService;
 use Illuminate\Support\Facades\Log;
@@ -159,9 +160,10 @@ class ExistService
      * @param User $user
      * @param string $integration
      * @param array $attributesRequested
+     * @param bool $isNew
      * @return StandardDTO
      */
-    public function setAttributes(User $user, string $integration, array $attributesRequested): StandardDTO
+    public function setAttributes(User $user, string $integration, array $attributesRequested, bool $isNew): StandardDTO
     {
         $attributeList = collect(config('services.' . $integration . '.attributes'));
         $attributesRequested = collect($attributesRequested);
@@ -191,6 +193,10 @@ class ExistService
                             'value_type' => $attributeDetail['value_type']
                         ]);
                     }
+
+                    if ($isNew) {
+                        $this->zeroUserData($user, $integration, $attributeDetail['attribute'], config('services.baseDays'));
+                    }
                 }
             } else {
                 // The attribute was not requested to be added. Check if the user already has it.
@@ -200,6 +206,12 @@ class ExistService
                             'name' => $attributeDetail['attribute'] // Release Attribute needs to use the name key
                         ]);
                     }
+
+                    UserData::where('user_id', $user->id)
+                        ->where('service', $integration)
+                        ->where('attribute', $attributeDetail['attribute'])
+                        ->delete();
+
                     $check->delete();
                 }
             }
@@ -247,7 +259,7 @@ class ExistService
                         'attribute' => $success['name']
                     ]);
                 }
-    
+
                 // If the attribute has been created it will fail when trying to re-add it
                 foreach ($createAttributeResponse->failed as $failure) {
                     if ($failure['error_code'] === "exists") {
@@ -264,6 +276,35 @@ class ExistService
                     message: "Error connecting to Exist"
                 );
             }
+        }
+
+        return new StandardDTO(
+            success: true
+        );
+    }
+
+    /**
+     * Adds an entry into the UserData table that will zero out the records in Exist for the
+     * service and integration for the number of dates.
+     */
+    public function zeroUserData(User $user, string $integration, string $attribute, int $days): StandardDTO
+    {
+        $startDate = date("Y-m-d", strtotime("-$days days"));
+        $endDate = date("Y-m-d");
+
+        $iterationDate = strtoTime($startDate);
+        while ($iterationDate <= strtotime($endDate)) {
+
+            UserData::create([
+                'user_id' => $user->id,
+                'service' => $integration,
+                'service_id' => 'zero',
+                'attribute' => $attribute,
+                'date_id' => date("Y-m-d", $iterationDate),
+                'value' => 0
+            ]);
+
+            $iterationDate = strtotime("1 day", $iterationDate);
         }
         
         return new StandardDTO(

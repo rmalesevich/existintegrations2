@@ -4,13 +4,12 @@ namespace App\Services;
 
 use App\Models\User;
 use App\Models\UserAttribute;
-use App\Models\WhatPulsePulses;
+use App\Models\UserData;
 use App\Models\WhatPulseUser;
 use App\Objects\StandardDTO;
 use App\Services\ApiIntegrations\ExistApiService;
 use App\Services\ApiIntegrations\WhatPulseApiService;
 use Carbon\Carbon;
-use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Log;
 
 class WhatPulseService
@@ -50,7 +49,8 @@ class WhatPulseService
 
         WhatPulseUser::create([
             'user_id' => $user->id,
-            'account_name' => $userDetailsResponse->AccountName
+            'account_name' => $userDetailsResponse->AccountName,
+            'is_new' => true
         ]);
 
         return new StandardDTO(
@@ -67,7 +67,8 @@ class WhatPulseService
      */
     public function disconnect(User $user, string $trigger = ""): StandardDTO
     {
-        WhatPulsePulses::where('user_id', $user->id)
+        UserData::where('user_id', $user->id)
+            ->where('service', 'whatpulse')
             ->delete();
         UserAttribute::where('user_id', $user->id)
             ->where('integration', 'whatpulse')
@@ -90,9 +91,11 @@ class WhatPulseService
      */
     public function processPulses(User $user): StandardDTO
     {
+        $days = config('services.baseDays') * -1;
+        
         $currentDT = new Carbon("now", "UTC");
         $end = $currentDT->getTimestamp();
-        $start = $currentDT->addDays(-7)->getTimestamp();
+        $start = $currentDT->addDays($days)->getTimestamp();
 
         $pulseResponse = $this->api->getPulses($user->whatpulseUser->account_name, $start, $end);
         if ($pulseResponse === null) {
@@ -102,6 +105,10 @@ class WhatPulseService
             );
         }
 
+        $userAttributes = UserAttribute::where('user_id', $user->id)
+            ->where('integration', 'whatpulse')
+            ->get();
+
         // store everything in the database
         foreach ($pulseResponse->data as $pulse) {
             $pulseDateDT = new Carbon($pulse->Timedate, "UTC");
@@ -110,17 +117,32 @@ class WhatPulseService
 
             $dateId = date('Y-m-d', strtotime($pulseDate));
 
-            WhatPulsePulses::updateOrCreate([
-                'user_id' => $user->id,
-                'pulse_id' => $pulse->PulseID
-            ], [
-                'date_id' => $dateId,
-                'pulse_date' => $pulseDate,
-                'keystrokes' => $pulse->Keys,
-                'mouse_clicks' => $pulse->Clicks,
-                'download_mb' => $pulse->DownloadMB,
-                'upload_mb' => $pulse->UploadMB
-            ]);
+            foreach ($userAttributes as $attribute) {
+                switch ($attribute->attribute) {
+                    case 'keystrokes':
+                        $value = $pulse->Keys;
+                        break;
+                    case "mouse_clicks":
+                        $value = $pulse->Clicks;
+                        break;
+                    case "download_mb":
+                        $value = $pulse->DownloadMB;
+                        break;
+                    case "upload_mb":
+                        $value = $pulse->UploadMB;
+                        break;
+                }
+
+                UserData::updateOrCreate([
+                    'user_id' => $user->id,
+                    'service' => 'whatpulse',
+                    'service_id' => $pulse->PulseID,
+                    'attribute' => $attribute->attribute,
+                    'date_id' => $dateId
+                ], [
+                    'value' => $value
+                ]);
+            }
         }
 
         return new StandardDTO(
@@ -129,8 +151,8 @@ class WhatPulseService
     }
 
     /**
-     * Loop through the WhatPulsePulses for the user and send the data to Exist.
-     * If $zero = true, it will zero out the data already sent to Exist.
+     * Loop through the UserData for the user and process the data to Exist.
+     * If zero is passed in, the update endpoint will be used.
      * 
      * @param User $user
      * @param bool $zero
@@ -138,26 +160,25 @@ class WhatPulseService
      */
     public function sendToExist(User $user, bool $zero = false): StandardDTO
     {
-        $pulses = WhatPulsePulses::where('user_id', $user->id)
-            ->where('sent_to_exist', $zero)
-            ->get();
+        $baseUserData = UserData::where('user_id', $user->id)
+            ->where('service', 'whatpulse')
+            ->where('sent_to_exist', false);
 
-        $attributes = UserAttribute::where('user_id', $user->id)
-            ->where('integration', 'whatpulse')
-            ->get();
+        if ($zero) {
+            $userData = $baseUserData->where('service_id', 'zero')
+                ->get();
+        } else {
+            $userData = $baseUserData->get();
+        }
 
         // build the total Payload
         $totalPayload = array();
-        foreach ($pulses as $pulse) {
-            foreach ($attributes as $attribute) {
-
-                $name = $attribute->attribute;
-                array_push($totalPayload, [
-                    'name' => $name,
-                    'date' => $pulse->date_id,
-                    'value' => $zero ? 0 : $pulse->$name
-                ]);
-            }
+        foreach ($userData as $data) {
+            array_push($totalPayload, [
+                'name' => $data->attribute,
+                'date' => $data->date_id,
+                'value' => $data->value
+            ]);
         }
 
         $maxUpdate = config('services.exist.maxUpdate');
@@ -170,14 +191,36 @@ class WhatPulseService
                 $status = $this->exist->updateAttributeValue($user, $payload);
             } else {
                 $status = $this->exist->incrementAttributeValue($user, $payload);
+            }
 
-                if ($status !== null) {
-                    foreach ($status->success as $record) {
-                        WhatPulsePulses::where('user_id', $user->id)
-                            ->where('date_id', $record['date'])
-                            ->where($record['name'], $record['value'])
-                            ->update(['sent_to_exist' => true]);
+            if ($status !== null) {
+                foreach ($status->success as $record) {
+                    $baseUserData = UserData::where('user_id', $user->id)
+                        ->where('service', 'whatpulse')
+                        ->where('attribute', $record['name'])
+                        ->where('date_id', $record['date'])
+                        ->where('value', $record['value'])
+                        ->where('sent_to_exist', false);
+
+                    if ($zero) {
+                        $baseUserData->where('service_id', 'zero');
                     }
+
+                    $data = $baseUserData->orderBy('id', 'asc')
+                        ->first();
+
+                    $responseDate = new Carbon("now", "UTC");
+
+                    $data->sent_to_exist = true;
+                    $data->response_date = $responseDate;
+
+                    if ($zero) {
+                        $data->response = "Updated to: " . $record['value'];
+                    } else {
+                        $data->response = "Incremented " . $record['value'] . " to " . $record['current'];
+                    }
+                    
+                    $data->save();
                 }
             }
             
