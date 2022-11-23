@@ -78,6 +78,14 @@ return [
         ]
     ],
 
+    //Configuration related to the integration with Trakt
+    'trakt' => [
+        'key' => 'trakt',
+        'authUri' => 'https://trakt.tv/oauth/authorize',
+        'tokenUri' => 'https://trakt.tv/oauth/token',
+        'baseUri' => 'https://api.trakt.tv',
+    ],
+
     // Array with all of the officially supported integrations
     'integrations' => [
         [

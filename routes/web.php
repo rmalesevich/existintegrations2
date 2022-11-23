@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\IntegrationController;
 use App\Http\Controllers\Integrations\ExistController;
+use App\Http\Controllers\Integrations\TraktController;
 use App\Http\Controllers\Integrations\WhatPulseController;
 use Illuminate\Support\Facades\Route;
 
@@ -45,3 +46,7 @@ Route::delete('/services/whatpulse/disconnect', [WhatPulseController::class, 'di
 Route::get('/services/whatpulse/manage', [WhatPulseController::class, 'manage'])->name('whatpulse.manage');
 Route::post('/services/whatpulse/setAttributes', [WhatPulseController::class, 'setAttributes'])->name('whatpulse.setAttributes');
 Route::post('/services/whatpulse/zero', [WhatPulseController::class, 'zero'])->name('whatpulse.zero');
+
+// Trakt Routes
+Route::get('/services/trakt/connect', [TraktController::class, 'connect'])->name('trakt.connect');
+Route::get('/services/trakt/connected', [TraktController::class, 'connected'])->name('trakt.connected');
