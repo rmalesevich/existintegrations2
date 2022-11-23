@@ -63,10 +63,10 @@
                 @if ($availableIntegrations == 0)
                     <div class="m-4 p-4">
                         <p class="mb-4">
-                            There are currently no integrations that Exist Integrations support that you aren't already using. Awesome job!
+                            {{ __('app.noAvailableIntegrations1') }}
                         </p>
                         <p class="mb-4">
-                            If you have other services that has an exposed API that could be added, please suggest them on our <a href="{{ config('services.roadmapUri') }}" class="text-blue-600 hover:text-blue-700 transition duration-300 ease-in-out mb-4">roadmap</a>.
+                            {{ __('app.noAvailableIntegrations2') }} <a href="{{ config('services.roadmapUri') }}" class="text-blue-600 hover:text-blue-700 transition duration-300 ease-in-out mb-4">roadmap</a>.
                         </p>
                     </div>
                 @endif
