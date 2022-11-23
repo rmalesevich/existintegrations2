@@ -284,11 +284,19 @@ class ExistService
     }
 
     /**
+     * First this clears out any records in teh UserData table for the integration and attribute
+     * so that on the next processing of the data, the last records will be resent after the zeroing.
+     * 
      * Adds an entry into the UserData table that will zero out the records in Exist for the
      * service and integration for the number of dates.
      */
     public function zeroUserData(User $user, string $integration, string $attribute, int $days): StandardDTO
     {
+        UserData::where('user_id', $user->id)
+            ->where('service', $integration)
+            ->where('attribute', $attribute)
+            ->delete();
+        
         $startDate = date("Y-m-d", strtotime("-$days days"));
         $endDate = date("Y-m-d");
 
