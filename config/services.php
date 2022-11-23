@@ -87,6 +87,13 @@ return [
             'logo' => '/images/whatpulse.png',
             'description' => 'WhatPulse measures your computer usage through keyboard/mouse usage, bandwidth, and uptime. This data is available through their API so it can be mapped to Exist attributes and populated through Exist Integrations.',
             'enabled' => true
+        ], [
+            'service' => 'trakt',
+            'userMethod' => 'traktUser',
+            'outputName' => 'Trakt',
+            'logo' => '/images/trakt.png',
+            'description' => 'Trakt is a platform that keeps track of the TV shows and movies you watch. Your watch history can be pulled through their API and mapped to total media time attributes on Exist through Exist Integrations',
+            'enabled' => true
         ]
     ]
 
