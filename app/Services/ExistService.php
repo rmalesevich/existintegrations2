@@ -6,6 +6,7 @@ use App\Models\ExistUser;
 use App\Models\User;
 use App\Models\UserAttribute;
 use App\Models\UserData;
+use App\Objects\Exist\ExistStatusDTO;
 use App\Objects\StandardDTO;
 use App\Services\ApiIntegrations\ExistApiService;
 use Illuminate\Support\Facades\Log;
@@ -165,6 +166,11 @@ class ExistService
      */
     public function setAttributes(User $user, string $integration, array $attributesRequested, bool $isNew): StandardDTO
     {
+        $checkTokenResponse = $this->checkToken($user);
+        if (!$checkTokenResponse->success) {
+            return $checkTokenResponse;
+        }
+        
         $attributeList = collect(config('services.' . $integration . '.attributes'));
         $attributesRequested = collect($attributesRequested);
 
@@ -281,6 +287,37 @@ class ExistService
         return new StandardDTO(
             success: true
         );
+    }
+
+    /**
+     * Connect to the API to set values on Exist for the user.
+     * Method can be either update or increment.
+     * 
+     * @param User $user
+     * @param array $payload
+     * @param string $method
+     * @return ExistStatusDTO
+     */
+    public function setAttributeValue(User $user, array $payload, string $method = "increment"): ?ExistStatusDTO
+    {
+        $checkTokenResponse = $this->checkToken($user);
+        if (!$checkTokenResponse->success) {
+            return null;
+        }
+
+        if ($method != "increment" && $method != "update") {
+            $method = "increment";
+        }
+        
+        if ($method == "increment") {
+            $attributeStatus = $this->api->incrementAttributeValue($user, $payload);
+        } else if ($method == "update") {
+            $attributeStatus = $this->api->updateAttributeValue($user, $payload);
+        } else {
+            $attributeStatus = null;
+        }
+
+        return $attributeStatus;
     }
 
     /**

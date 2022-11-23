@@ -7,7 +7,6 @@ use App\Models\UserAttribute;
 use App\Models\UserData;
 use App\Models\WhatPulseUser;
 use App\Objects\StandardDTO;
-use App\Services\ApiIntegrations\ExistApiService;
 use App\Services\ApiIntegrations\WhatPulseApiService;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
@@ -16,7 +15,7 @@ class WhatPulseService
 {
     public $api;
 
-    public function __construct(WhatPulseApiService $api, ExistApiService $exist)
+    public function __construct(WhatPulseApiService $api, ExistService $exist)
     {
         $this->api = $api;
         $this->exist = $exist;
@@ -188,9 +187,9 @@ class WhatPulseService
             $payload = array_slice($totalPayload, $i * $maxUpdate, $maxUpdate);
 
             if ($zero) {
-                $status = $this->exist->updateAttributeValue($user, $payload);
+                $status = $this->exist->setAttributeValue($user, $payload, "update");
             } else {
-                $status = $this->exist->incrementAttributeValue($user, $payload);
+                $status = $this->exist->setAttributeValue($user, $payload, "increment");
             }
 
             if ($status !== null) {
