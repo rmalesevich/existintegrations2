@@ -33,7 +33,7 @@ class ExistService
         if ($oauthTokenResponse === null) {
             return new StandardDTO(
                 success: false,
-                message: "Failed to exchange the OAuth code for the Token."
+                message: __('app.oAuthCodeError')
             );
         }
 
@@ -43,13 +43,14 @@ class ExistService
             'refresh_token' => $oauthTokenResponse->refresh_token,
             'token_expires' => date('Y-m-d H:i:s', (time() + $oauthTokenResponse->expires_in))
         ]);
+        $user = User::find($user->id);
 
         $accountProfileResponse = $this->api->getAccountProfile($user);
         if ($accountProfileResponse === null) {
             ExistUser::find($user->existUser->id)->delete();
             return new StandardDTO(
                 success: false,
-                message: "Failed to retrieve profile information for your account from Exist."
+                message: __('app.accountProfileAPIFail', ['service' => 'Exist'])
             );
         }
 
