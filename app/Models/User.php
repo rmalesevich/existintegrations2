@@ -49,6 +49,9 @@ class User extends Authenticatable
             case "whatpulse":
                 return ($this->whatPulseUser !== null);
                 break;
+            case "trakt":
+                return ($this->traktUser !== null);
+                break;
             default:
                 return false;
                 break;
@@ -63,6 +66,16 @@ class User extends Authenticatable
     public function whatpulseUser()
     {
         return $this->hasOne(WhatPulseUser::class);
+    }
+
+    /**
+     * Retrieve the Trakt object associated with this User
+     * 
+     * @return TraktUser
+     */
+    public function traktUser()
+    {
+        return $this->hasOne(TraktUser::class);
     }
 
     /**

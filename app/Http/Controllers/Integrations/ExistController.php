@@ -39,9 +39,11 @@ class ExistController extends Controller
      */
     public function connected(Request $request)
     {
+        if (auth()->user()->existUser !== null) return redirect()->route('home');
+
         if (request('error') === "access_denied") {
             return redirect()->route('home')
-                ->with('errorMessage', 'Exist authorization flow was canceled.');
+                ->with('errorMessage', __('app.oAuthFlowCanceled', ['service' => 'Exist']));
         }
 
         // retrieve the code from Exist
@@ -50,9 +52,9 @@ class ExistController extends Controller
 
         $authorizeResponse = $this->exist->authorize(auth()->user(), $code);
         if ($authorizeResponse->success) {
-            $successMessage = "Exist Integrations has successfully connected to your Exist account";
+            $successMessage = __('app.oAuthSuccess', ['service' => 'Exist']);
         } else {
-            $errorMessage = $authorizeResponse->message ?? "Unknown error";
+            $errorMessage = $authorizeResponse->message ?? __('app.unknownError');
         }
 
         return redirect()->route('home')

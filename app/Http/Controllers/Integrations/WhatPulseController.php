@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Integrations;
 
 use App\Http\Controllers\Controller;
 use App\Models\UserAttribute;
-use App\Models\WhatPulsePulses;
 use App\Models\WhatPulseUser;
 use App\Services\ExistService;
 use App\Services\WhatPulseService;
