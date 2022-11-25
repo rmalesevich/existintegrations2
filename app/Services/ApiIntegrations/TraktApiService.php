@@ -5,6 +5,7 @@ namespace App\Services\ApiIntegrations;
 use App\Models\User;
 use App\Objects\ApiRequestDTO;
 use App\Objects\Trakt\TraktAccountProfileDTO;
+use App\Objects\Trakt\TraktHistoryDTO;
 use App\Objects\Trakt\TraktOAuthTokenDTO;
 use App\Services\AbstractApiService;
 
@@ -85,6 +86,40 @@ class TraktApiService extends AbstractApiService
         $accountProfileResponse = $this->request($apiRequest);
         if ($accountProfileResponse->success && $accountProfileResponse->responseBody !== null) {
             return new TraktAccountProfileDTO($accountProfileResponse->responseBody);
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * Retrieve the watch history from the user.
+     * Reference URL: https://trakt.docs.apiary.io/#reference/users/history/get-watched-history
+     * 
+     * @param User $user
+     * @param DateTime $startAt
+     * @param DateTime $endAt
+     */
+    public function getHistory(User $user, \DateTime $startAt, \DateTime $endAt): ?TraktHistoryDTO
+    {
+        $uri = config('services.trakt.baseUri') . '/users/me/history?start_at=' .
+            $startAt->format('Y-m-d\TH:i:s.000\Z') . '&end_at=' . $endAt->format('Y-m-d\TH:i:s.000\Z') . '&limit=250';
+
+        $apiRequest = new ApiRequestDTO(
+            method: 'GET',
+            uri: $uri,
+            params: [
+                'headers' => [
+                    'Content-Type' => 'application/json',
+                    'trakt-api-version' => 2,
+                    'trakt-api-key' => $this->clientId,
+                    'Authorization' => 'Bearer ' . $user->traktUser->access_token
+                ]
+            ]
+        );
+
+        $historyResponse = $this->request($apiRequest);
+        if ($historyResponse->success && $historyResponse->responseBody !== null) {
+            return TraktHistoryDTO::fromRequest($historyResponse->responseBody);
         } else {
             return null;
         }
