@@ -28,7 +28,30 @@
                         </a>
                     </div>
 
-                    
+                    <div class="mb-8">
+                        <h3 class="font-semibold text-xl text-gray-800 leading-tight mb-4">
+                            {{ __('app.connectedAs', ['username' => $user->traktUser->user]) }}
+                        </h3>
+                    </div>
+
+                    <div class="mb-4 pb-4">
+                        <div class="float-right">
+                            <form action="{{ route('trakt.disconnect') }}" method="post">
+                                @method('DELETE')
+                                @csrf
+                                @php
+                                    $disconnectText = __('app.disconnectConfirm');
+                                @endphp
+                                <button 
+                                    type="submit" 
+                                    title="{{ __('app.disconnectTitle', ['service' => 'Trakt']) }}"
+                                    onclick="return confirm('{{ $disconnectText }}');"
+                                    class="inline-block px-6 py-2.5 bg-red-600 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-red-700 hover:shadow-lg focus:bg-red-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-red-800 active:shadow-lg transition duration-150 ease-in-out">
+                                    {{ __('app.disconnectButton', ['service' => 'Trakt']) }}
+                                </button>
+                            </form>
+                        </div>
+                    </div>
 
                 </div>
             </div>

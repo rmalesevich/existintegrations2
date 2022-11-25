@@ -63,9 +63,9 @@ class WhatPulseController extends Controller
 
         $disconnect = $this->whatpulse->disconnect(auth()->user(), "User Initiated");
         if ($disconnect->success) {
-            $successMessage = "Exist Integrations has been successfully disconnected from your WhatPulse account";
+            $successMessage = __('app.serviceDisconnect', ['service' => 'WhatPulse']);
         } else {
-            $errorMessage = $disconnect->message ?? "Unknown error";
+            $errorMessage = $disconnect->message ?? __('app.unknownError');
         }
 
         return redirect()->route('home')

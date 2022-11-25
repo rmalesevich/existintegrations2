@@ -62,6 +62,28 @@ class TraktController extends Controller
     }
 
     /**
+     * ROUTE: /services/trakt/disconnect
+     * METHOD: DELETE
+     * 
+     * Calls the disconnect method in the Trakt Service to remove data for this year
+     */
+    public function disconnect()
+    {
+        if (auth()->user()->existUser === null || auth()->user()->traktUser === null) return redirect()->route('home');
+
+        $disconnect = $this->trakt->disconnect(auth()->user(), "User Initiated");
+        if ($disconnect->success) {
+            $successMessage = __('app.serviceDisconnect', ['service' => 'Trakt']);
+        } else {
+            $errorMessage = $disconnect->message ?? __('app.unknownError');
+        }
+
+        return redirect()->route('home')
+            ->with('successMessage', $successMessage ?? null)
+            ->with('errorMessage', $errorMessage ?? null);
+    }
+
+    /**
      * ROUTE: /services/trakt/manage
      * METHOD: GET
      * 

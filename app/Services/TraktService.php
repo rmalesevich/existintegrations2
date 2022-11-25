@@ -4,6 +4,8 @@ namespace App\Services;
 
 use App\Models\TraktUser;
 use App\Models\User;
+use App\Models\UserAttribute;
+use App\Models\UserData;
 use App\Objects\StandardDTO;
 use App\Services\ApiIntegrations\TraktApiService;
 use Illuminate\Support\Facades\Log;
@@ -56,6 +58,31 @@ class TraktService
                 'username' => $accountProfileResponse->username
             ]);
 
+        return new StandardDTO(
+            success: true
+        );
+    }
+
+    /**
+     * Disconnect Exist Integrations from this user by removing any data associated with it
+     * 
+     * @param User $user
+     * @param string $trigger
+     * @return StandardDTO
+     */
+    public function disconnect(User $user, string $trigger = ""): StandardDTO
+    {
+        UserData::where('user_id', $user->id)
+            ->where('service', 'trakt')
+            ->delete();
+        UserAttribute::where('user_id', $user->id)
+            ->where('integration', 'trakt')
+            ->delete();
+        TraktUser::where('id', $user->traktUser->id)
+            ->delete();
+        
+        Log::info(sprintf("TRAKT DISCONNECT: User ID %s via trigger %s", $user->id, $trigger));
+        
         return new StandardDTO(
             success: true
         );

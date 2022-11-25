@@ -76,6 +76,9 @@ class ExistService
     {
         $whatpulse = app(WhatPulseService::class);
         $whatpulse->disconnect($user, "Exist disconnect");
+
+        $trakt = app(TraktService::class);
+        $trakt->disconnect($user, "Exist disconnect");
         
         ExistUser::where('id', $user->existUser->id)->delete();
         UserAttribute::where('user_id', $user->id)

@@ -11,6 +11,7 @@ return [
     'initiateConnect' => 'Connect to :service',
     'accountProfileAPIFail' => 'Failed to retrieve profile information for your account from :service',
     'unknownError' => 'Unknown error occurred.',
+    'serviceDisconnect' => 'Exist Integrations has been successfully disconnected from your :service account',
 
     // OAUTH TEXT
     'oAuthFlowCanceled' => ':service authorization flow was canceled.',
@@ -21,5 +22,10 @@ return [
     // ADD TEXT
     'noAvailableIntegrations1' => 'There are currently no integrations that Exist Integrations support that you aren\'t already using. Awesome job!',
     'noAvailableIntegrations2' => 'If you have other services that has an exposed API that could be added, please suggest them on our roadmap: ',
+
+    // MANAGE TEXT
+    'disconnectTitle' => 'If you disconnect your Exist Integrations account from :service, all data stored within Exist Integrations to support sending 3rd party data to Exist will be permanently deleted.',
+    'disconnectConfirm' => 'Are you sure you want to disconnect this integration?',
+    'disconnectButton' => 'Disconnect Exist Integrations from :service',
 
 ];
