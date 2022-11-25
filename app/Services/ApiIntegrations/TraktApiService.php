@@ -5,6 +5,7 @@ namespace App\Services\ApiIntegrations;
 use App\Models\User;
 use App\Objects\ApiRequestDTO;
 use App\Objects\Trakt\TraktAccountProfileDTO;
+use App\Objects\Trakt\TraktEpisodeDTO;
 use App\Objects\Trakt\TraktHistoryDTO;
 use App\Objects\Trakt\TraktMovieDTO;
 use App\Objects\Trakt\TraktOAuthTokenDTO;
@@ -150,6 +151,37 @@ class TraktApiService extends AbstractApiService
         $movieResponse = $this->request($apiRequest);
         if ($movieResponse->success && $movieResponse->responseBody !== null) {
             return new TraktMovieDTO($movieResponse->responseBody);
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * Get the Episode Details from Trakt. The ID is the ID for the show and not the episode.
+     * Reference URL: https://trakt.docs.apiary.io/#reference/episodes/summary/get-a-single-episode-for-a-show
+     * 
+     * @param string $id
+     * @param int $season
+     * @param int $number
+     * @return TraktEpisodeDTO
+     */
+    public function getEpisode(string $id, int $season, int $number): ?TraktEpisodeDTO
+    {
+        $apiRequest = new ApiRequestDTO(
+            method: 'GET',
+            uri: config('services.trakt.baseUri') . '/shows/' . $id . '/seasons/'. $season . '/episodes/' . $number . '?extended=full',
+            params: [
+                'headers' => [
+                    'Content-Type' => 'application/json',
+                    'trakt-api-version' => 2,
+                    'trakt-api-key' => $this->clientId
+                ]
+            ]
+        );
+
+        $episodeResponse = $this->request($apiRequest);
+        if ($episodeResponse->success && $episodeResponse->responseBody !== null) {
+            return new TraktEpisodeDTO($episodeResponse->responseBody);
         } else {
             return null;
         }
