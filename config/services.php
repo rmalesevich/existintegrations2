@@ -84,6 +84,21 @@ return [
         'authUri' => 'https://trakt.tv/oauth/authorize',
         'tokenUri' => 'https://trakt.tv/oauth/token',
         'baseUri' => 'https://api.trakt.tv',
+        'attributes' => [
+            [
+                'attribute' => 'tv_min',
+                'template' => 'tv_min',
+                'label' => 'Time watching TV',
+                'group' => 'media',
+                'value_type' => 3
+            ], [
+                'attribute' => 'movie_min',
+                'template' => null,
+                'label' => 'Time watching Movies',
+                'group' => 'media',
+                'value_type' => 3
+            ]
+        ]
     ],
 
     // Array with all of the officially supported integrations
