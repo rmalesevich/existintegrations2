@@ -6,6 +6,7 @@ use App\Models\User;
 use App\Objects\ApiRequestDTO;
 use App\Objects\Trakt\TraktAccountProfileDTO;
 use App\Objects\Trakt\TraktHistoryDTO;
+use App\Objects\Trakt\TraktMovieDTO;
 use App\Objects\Trakt\TraktOAuthTokenDTO;
 use App\Services\AbstractApiService;
 
@@ -120,6 +121,35 @@ class TraktApiService extends AbstractApiService
         $historyResponse = $this->request($apiRequest);
         if ($historyResponse->success && $historyResponse->responseBody !== null) {
             return TraktHistoryDTO::fromRequest($historyResponse->responseBody);
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * Get the Movie details from the Trakt service
+     * Reference URL: https://trakt.docs.apiary.io/#reference/movies/summary
+     * 
+     * @param string $id
+     * @return TraktMovieDTO
+     */
+    public function getMovie(string $id): ?TraktMovieDTO
+    {
+        $apiRequest = new ApiRequestDTO(
+            method: 'GET',
+            uri: config('services.trakt.baseUri') . '/movies/' . $id . '?extended=full',
+            params: [
+                'headers' => [
+                    'Content-Type' => 'application/json',
+                    'trakt-api-version' => 2,
+                    'trakt-api-key' => $this->clientId
+                ]
+            ]
+        );
+
+        $movieResponse = $this->request($apiRequest);
+        if ($movieResponse->success && $movieResponse->responseBody !== null) {
+            return new TraktMovieDTO($movieResponse->responseBody);
         } else {
             return null;
         }
