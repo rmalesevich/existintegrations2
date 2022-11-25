@@ -103,7 +103,7 @@ class ExistService
             if ($refreshTokenResponse === null) {
                 return new StandardDTO(
                     success: false,
-                    message: "Failed to refresh the Access Token from Exist"
+                    message: __('app.oAuthRefreshError', ['service' => 'Exist'])
                 );
             }
 

@@ -64,6 +64,36 @@ class TraktApiService extends AbstractApiService
     }
 
     /**
+     * Refresh the OAuth Access Token using the Refresh Token
+     * 
+     * @param string $refreshToken
+     * @return TraktOAuthTokenDTO
+     */
+    public function refreshToken(string $refreshToken): ?TraktOAuthTokenDTO
+    {
+        $apiRequest = new ApiRequestDTO(
+            method: 'POST',
+            uri: config('services.trakt.tokenUri'),
+            params: [
+                'form_params' => [
+                    'grant_type' => 'refresh_token',
+                    'refresh_token' => $refreshToken,
+                    'client_id' => $this->clientId,
+                    'client_secret' => $this->clientSecret,
+                    'redirect_uri' => route('trakt.connected')
+                ]
+            ]
+        );
+
+        $tokenResponse = $this->request($apiRequest);
+        if ($tokenResponse->success && $tokenResponse->responseBody !== null) {
+            return new TraktOAuthTokenDTO($tokenResponse->responseBody);
+        } else {
+            return null;
+        }
+    }
+
+    /**
      * Retrieve the Account Profile from the Trakt API.
      * Reference URL: https://trakt.docs.apiary.io/#reference/users/profile/get-user-profile
      * 

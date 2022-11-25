@@ -61,4 +61,36 @@ class TraktService
         );
     }
 
+    /**
+     * Token the Token for the user to ensure it's still valid. If required, refresh the token from Trakt.
+     * 
+     * @param User $user
+     * @return StandardDTO
+     */
+    public function checkToken(User $user): StandardDTO
+    {
+        $todaysDate = date('Y-m-d H:i:s');
+
+        if ($todaysDate >= $user->traktUser->token_expires) {
+            $refreshTokenResponse = $this->api->refreshToken($user->traktUser->refresh_token);
+            if ($refreshTokenResponse === null) {
+                return new StandardDTO(
+                    success: false,
+                    message: __('app.oAuthRefreshError', ['service' => 'Trakt'])
+                );
+            }
+
+            TraktUser::find($user->traktUser->id)
+                ->update([
+                    'access_token' => $refreshTokenResponse->access_token,
+                    'refresh_token' => $refreshTokenResponse->refresh_token,
+                    'token_expires' => date('Y-m-d H:i:s', (time() + $refreshTokenResponse->expires_in))
+                ]);
+        }
+
+        return new StandardDTO(
+            success: true
+        );
+    }
+
 }

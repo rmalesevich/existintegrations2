@@ -15,6 +15,7 @@ return [
     // OAUTH TEXT
     'oAuthFlowCanceled' => ':service authorization flow was canceled.',
     'oAuthCodeError' => 'Failed to exchange OAuth code for the Token.',
+    'oAuthRefreshError' => 'Failed to refresh OAuth Access Token from :service',
     'oAuthSuccess' => 'Exist Integrations has successfully connected to your :service account.',
 
     // ADD TEXT
