@@ -50,4 +50,7 @@ Route::post('/services/whatpulse/zero', [WhatPulseController::class, 'zero'])->n
 // Trakt Routes
 Route::get('/services/trakt/connect', [TraktController::class, 'connect'])->name('trakt.connect');
 Route::get('/services/trakt/connected', [TraktController::class, 'connected'])->name('trakt.connected');
+Route::delete('/services/trakt/disconnect', [TraktController::class, 'disconnect'])->name('trakt.disconnect');
 Route::get('/services/trakt/manage', [TraktController::class, 'manage'])->name('trakt.manage');
+Route::post('/services/trakt/setAttributes', [TraktController::class, 'setAttributes'])->name('trakt.setAttributes');
+Route::post('/services/trakt/zero', [TraktController::class, 'zero'])->name('trakt.zero');

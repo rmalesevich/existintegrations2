@@ -28,7 +28,91 @@
                         </a>
                     </div>
 
-                    
+                    <div class="mb-8">
+                        <h3 class="font-semibold text-xl text-gray-800 leading-tight mb-4">
+                            {{ __('app.connectedAs', ['username' => $user->traktUser->user]) }}
+                        </h3>
+                    </div>
+
+                    <div class="mb-12">
+                        <div class="text-sm text-gray-900">
+                            <h3 class="font-semibold text-xl text-gray-800 leading-tight mb-4">
+                                {{ __('app.attributeHeader') }}
+                            </h3>
+                            <form action="{{ route('trakt.setAttributes') }}" method="post">
+                            @csrf
+                                <div class="mb-4">
+                                @foreach ($attributes as $attribute)
+                                <div class="form-check"> 
+                                    <input class="form-check-input appearance-none h-4 w-4 border border-gray-300 rounded-sm bg-white checked:bg-blue-600 checked:border-blue-600 focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer" type="checkbox" id="{{ $attribute['attribute'] }}" name="{{ $attribute['attribute'] }}"
+                                        @if ($userAttributes->where('attribute', $attribute['attribute'])->first() !== null)
+                                            checked
+                                        @else
+                                            {{ $attribute['attribute'] }}
+                                        @endif
+                                    >
+                                    <label class="form-check-label inline-block text-gray-800" for="{{ $attribute['attribute'] }}">
+                                        {{ $attribute['label'] }}
+                                    </label>
+                                </div>
+                                @endforeach
+
+                                </div>
+
+                                <button 
+                                    type="submit" 
+                                    title="{{ __('app.attributeButtonTitle', ['service' => 'Trakt']) }}"
+                                    class="inline-block px-6 py-2.5 bg-green-500 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-green-600 hover:shadow-lg focus:bg-green-600 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-green-700 active:shadow-lg transition duration-150 ease-in-out">
+                                    {{ __('app.attributeButton', ['service' => 'WhatPulse']) }}
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <h3 class="font-semibold text-xl text-gray-800 leading-tight mb-4">
+                            {{ __('app.zeroOutHeader') }}
+                        </h3>
+                    </div>
+
+                    <div class="mb-12">
+                        <div class="text-sm text-gray-900">
+                            <p class="mb-4">
+                                {{ __('app.zeroOutText', ['service' => 'Trakt']) }}
+                            </p>
+                            <form action="{{ route('trakt.zero') }}" method="post">
+                                @csrf
+                                @php
+                                    $zeroOutText = __('app.zeroOutConfirm');
+                                @endphp
+                                <button 
+                                    type="submit" 
+                                    onclick="return confirm(' {{ $zeroOutText }}');"
+                                    class="inline-block px-6 py-2.5 bg-yellow-500 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-yellow-600 hover:shadow-lg focus:bg-yellow-600 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-yellow-700 active:shadow-lg transition duration-150 ease-in-out">
+                                    {{ __('app.zeroOutButton', ['service' => 'Trakt']) }}
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <div class="mb-4 pb-4">
+                        <div class="float-right">
+                            <form action="{{ route('trakt.disconnect') }}" method="post">
+                                @method('DELETE')
+                                @csrf
+                                @php
+                                    $disconnectText = __('app.disconnectConfirm');
+                                @endphp
+                                <button 
+                                    type="submit" 
+                                    title="{{ __('app.disconnectTitle', ['service' => 'Trakt']) }}"
+                                    onclick="return confirm('{{ $disconnectText }}');"
+                                    class="inline-block px-6 py-2.5 bg-red-600 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-red-700 hover:shadow-lg focus:bg-red-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-red-800 active:shadow-lg transition duration-150 ease-in-out">
+                                    {{ __('app.disconnectButton', ['service' => 'Trakt']) }}
+                                </button>
+                            </form>
+                        </div>
+                    </div>
 
                 </div>
             </div>

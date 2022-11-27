@@ -76,6 +76,9 @@ class ExistService
     {
         $whatpulse = app(WhatPulseService::class);
         $whatpulse->disconnect($user, "Exist disconnect");
+
+        $trakt = app(TraktService::class);
+        $trakt->disconnect($user, "Exist disconnect");
         
         ExistUser::where('id', $user->existUser->id)->delete();
         UserAttribute::where('user_id', $user->id)
@@ -103,7 +106,7 @@ class ExistService
             if ($refreshTokenResponse === null) {
                 return new StandardDTO(
                     success: false,
-                    message: "Failed to refresh the Access Token from Exist"
+                    message: __('app.oAuthRefreshError', ['service' => 'Exist'])
                 );
             }
 
@@ -231,7 +234,7 @@ class ExistService
                 foreach ($acquireAttributeResponse->success as $success) {
                     UserAttribute::updateOrCreate([
                         'user_id' => $user->id,
-                        'integration' => 'whatpulse',
+                        'integration' => $integration,
                         'attribute' => $success['template']
                     ]);
                 }
@@ -262,7 +265,7 @@ class ExistService
                 foreach ($createAttributeResponse->success as $success) {
                     UserAttribute::updateOrCreate([
                         'user_id' => $user->id,
-                        'integration' => 'whatpulse',
+                        'integration' => $integration,
                         'attribute' => $success['name']
                     ]);
                 }
@@ -272,7 +275,7 @@ class ExistService
                     if ($failure['error_code'] === "exists") {
                         UserAttribute::updateOrCreate([
                             'user_id' => $user->id,
-                            'integration' => 'whatpulse',
+                            'integration' => $integration,
                             'attribute' => $failure['name']
                         ]);
                     }

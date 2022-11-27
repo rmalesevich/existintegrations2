@@ -63,9 +63,9 @@ class WhatPulseController extends Controller
 
         $disconnect = $this->whatpulse->disconnect(auth()->user(), "User Initiated");
         if ($disconnect->success) {
-            $successMessage = "Exist Integrations has been successfully disconnected from your WhatPulse account";
+            $successMessage = __('app.serviceDisconnect', ['service' => 'WhatPulse']);
         } else {
-            $errorMessage = $disconnect->message ?? "Unknown error";
+            $errorMessage = $disconnect->message ?? __('app.unknownError');
         }
 
         return redirect()->route('home')
@@ -107,7 +107,7 @@ class WhatPulseController extends Controller
 
         $setAttributesResponse = $this->exist->setAttributes(auth()->user(), 'whatpulse', $attributes, auth()->user()->whatpulseUser->is_new);
         if ($setAttributesResponse->success) {
-            $successMessage = "Exist Integrations has set up your attributes";
+            $successMessage = __('app.attributeSuccess');
 
             if (auth()->user()->whatpulseUser->is_new) {
                 WhatPulseUser::where('user_id', auth()->user()->id)
@@ -117,7 +117,7 @@ class WhatPulseController extends Controller
             }
 
         } else {
-            $errorMessage = $setAttributesResponse->message ?? "Unknown error";
+            $errorMessage = $setAttributesResponse->message ?? __('app.unknownError');
         }
 
         return redirect()->route('whatpulse.manage')
@@ -143,7 +143,7 @@ class WhatPulseController extends Controller
         }
 
         return redirect()->route('whatpulse.manage')
-            ->with('successMessage', "WhatPulse attributes will be reset for the last $days days");
+            ->with('successMessage', __('app.zeroOutSuccess', ['service' => 'WhatPulse', 'days' => $days]));
     }
 
 }
