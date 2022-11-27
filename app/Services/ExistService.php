@@ -407,9 +407,9 @@ class ExistService
             $payload = array_slice($totalPayload, $i * $maxUpdate, $maxUpdate);
 
             if ($zero) {
-                $status = $this->exist->setAttributeValue($user, $payload, "update");
+                $status = $this->setAttributeValue($user, $payload, "update");
             } else {
-                $status = $this->exist->setAttributeValue($user, $payload, "increment");
+                $status = $this->setAttributeValue($user, $payload, "increment");
             }
 
             if ($status !== null) {
