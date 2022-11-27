@@ -100,7 +100,7 @@ class WhatPulseService
         if ($pulseResponse === null) {
             return new StandardDTO(
                 success: false,
-                message: "Error loading the pulses for this user"
+                message: __('app.whatpulsePulseError')
             );
         }
 

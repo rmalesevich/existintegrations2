@@ -10,6 +10,7 @@ use App\Objects\Trakt\TraktHistoryDTO;
 use App\Objects\Trakt\TraktMovieDTO;
 use App\Objects\Trakt\TraktOAuthTokenDTO;
 use App\Services\AbstractApiService;
+use Carbon\Carbon;
 
 class TraktApiService extends AbstractApiService
 {
@@ -131,7 +132,7 @@ class TraktApiService extends AbstractApiService
      * @param DateTime $startAt
      * @param DateTime $endAt
      */
-    public function getHistory(User $user, \DateTime $startAt, \DateTime $endAt): ?TraktHistoryDTO
+    public function getHistory(User $user, Carbon $startAt, Carbon $endAt): ?TraktHistoryDTO
     {
         $uri = config('services.trakt.baseUri') . '/users/me/history?start_at=' .
             $startAt->format('Y-m-d\TH:i:s.000\Z') . '&end_at=' . $endAt->format('Y-m-d\TH:i:s.000\Z') . '&limit=250';

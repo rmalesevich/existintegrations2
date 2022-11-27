@@ -35,4 +35,9 @@ return [
     'zeroOutConfirm' => 'Are you sure you want to zero out your data for these attributes?',
     'zeroOutSuccess' => ':service attributes will be reset for the last :days days',
 
+    // WHATPULSE ERRORS
+    'whatpulsePulseError' => 'Error loading the pulses for this user',
+    
+    // TRAKT ERRORS
+    'traktHistoryError' => 'Error loading the history for this user',
 ];
