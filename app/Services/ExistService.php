@@ -234,7 +234,7 @@ class ExistService
                 foreach ($acquireAttributeResponse->success as $success) {
                     UserAttribute::updateOrCreate([
                         'user_id' => $user->id,
-                        'integration' => 'whatpulse',
+                        'integration' => $integration,
                         'attribute' => $success['template']
                     ]);
                 }
@@ -265,7 +265,7 @@ class ExistService
                 foreach ($createAttributeResponse->success as $success) {
                     UserAttribute::updateOrCreate([
                         'user_id' => $user->id,
-                        'integration' => 'whatpulse',
+                        'integration' => $integration,
                         'attribute' => $success['name']
                     ]);
                 }
@@ -275,7 +275,7 @@ class ExistService
                     if ($failure['error_code'] === "exists") {
                         UserAttribute::updateOrCreate([
                             'user_id' => $user->id,
-                            'integration' => 'whatpulse',
+                            'integration' => $integration,
                             'attribute' => $failure['name']
                         ]);
                     }

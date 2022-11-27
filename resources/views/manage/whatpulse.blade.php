@@ -37,7 +37,7 @@
                     <div class="mb-12">
                         <div class="text-sm text-gray-900">
                             <h3 class="font-semibold text-xl text-gray-800 leading-tight mb-4">
-                                Configure the Attributes to send to Exist
+                                {{ __('app.attributeHeader') }}
                             </h3>
                             <form action="{{ route('whatpulse.setAttributes') }}" method="post">
                             @csrf
@@ -61,9 +61,9 @@
 
                                 <button 
                                     type="submit" 
-                                    title="The included attributes from WhatPulse will be sent regularly to Exist"
+                                    title="{{ __('app.attributeButtonTitle', ['service' => 'WhatPulse']) }}"
                                     class="inline-block px-6 py-2.5 bg-green-500 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-green-600 hover:shadow-lg focus:bg-green-600 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-green-700 active:shadow-lg transition duration-150 ease-in-out">
-                                    Set the Attributes from WhatPulse to send to Exist
+                                    {{ __('app.attributeButton', ['service' => 'WhatPulse']) }}
                                 </button>
                             </form>
                         </div>
@@ -71,7 +71,7 @@
 
                     <div class="mb-4">
                         <h3 class="font-semibold text-xl text-gray-800 leading-tight mb-4">
-                            Correct Data Issues
+                            {{ __('app.zeroOutHeader') }}
                         </h3>
                     </div>
 
@@ -82,9 +82,12 @@
                             </p>
                             <form action="{{ route('whatpulse.zero') }}" method="post">
                                 @csrf
+                                @php
+                                    $zeroOutText = __('app.zeroOutConfirm');
+                                @endphp
                                 <button 
                                     type="submit" 
-                                    onclick="return confirm('Are you sure you want to zero out your data for these attributes?');"
+                                    onclick="return confirm(' {{ $zeroOutText }}');"
                                     class="inline-block px-6 py-2.5 bg-yellow-500 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-yellow-600 hover:shadow-lg focus:bg-yellow-600 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-yellow-700 active:shadow-lg transition duration-150 ease-in-out">
                                     {{ __('app.zeroOutButton', ['service' => 'WhatPulse']) }}
                                 </button>

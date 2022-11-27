@@ -88,13 +88,13 @@ return [
             [
                 'attribute' => 'tv_min',
                 'template' => 'tv_min',
-                'label' => 'Time watching TV',
+                'label' => 'Watching TV',
                 'group' => 'media',
                 'value_type' => 3
             ], [
-                'attribute' => 'movie_min',
+                'attribute' => 'watching_movies',
                 'template' => null,
-                'label' => 'Time watching Movies',
+                'label' => 'Watching Movies',
                 'group' => 'media',
                 'value_type' => 3
             ]
