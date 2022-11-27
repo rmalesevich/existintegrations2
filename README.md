@@ -9,6 +9,9 @@ To connect to the various services that use OAuth 2.0, you will need to add the 
 ```php
 EXIST_CLIENT_ID=""
 EXIST_CLIENT_SECRET=""
+
+TRAKT_CLIENT_ID=""
+TRAKT_CLIENT_SECRET=""
 ```
 
 ## UI Elements
