@@ -8,6 +8,7 @@ use App\Models\UserAttribute;
 use App\Models\UserData;
 use App\Objects\StandardDTO;
 use App\Services\ApiIntegrations\TraktApiService;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
 
 class TraktService
@@ -115,6 +116,83 @@ class TraktService
                 ]);
         }
 
+        return new StandardDTO(
+            success: true
+        );
+    }
+
+    /**
+     * Load the History from Trakt and then get the runtime to add to the
+     * UserData table
+     * 
+     * @param User $user
+     * @return StandardTO
+     */
+    public function processHistory(User $user): StandardDTO
+    {
+        $days = config('services.baseDays') * -1;
+
+        $startAt = new Carbon();
+        $startAt->addDays($days);
+        $endAt = new Carbon();
+        $endAt->addDays(1);
+
+        $historyResponse = $this->api->getHistory($user, $startAt, $endAt);
+        if ($historyResponse === null) {
+            return new StandardDTO(
+                success: false,
+                message: __('app.traktHistoryError')
+            );
+        }
+
+        $userAttributes = UserAttribute::where('user_id', $user->id)
+            ->where('integration', 'trakt')
+            ->get();
+
+        foreach ($historyResponse->data as $history) {
+            if ($history->type == "episode" && $userAttributes->where('attribute', 'tv_min')->count() != 1) continue;
+            if ($history->type == "movie" && $userAttributes->where('attribute', 'watching_movies')->count() != 1) continue;
+            
+            $serviceId = $history->id;
+
+            $historyDT = new Carbon($history->watched_at, "UTC");
+            $historyDT->setTimezone($user->existUser->timezone);
+            $dateId = $historyDT->format('Y-m-d');
+
+            $value = 0;
+
+            if ($history->type == "movie") {
+                $attribute = "watching_movies";
+                if ($history->movie['ids']['trakt'] !== null) {
+                    $movieResponse = $this->api->getMovie($history->movie['ids']['trakt']);
+
+                    if ($movieResponse !== null) {
+                        $value = $movieResponse->runtime;
+                    }
+                }
+            } else if ($history->type == "episode") {
+                $attribute = "tv_min";
+                if ($history->show['ids']['trakt'] !== null) {
+                    $episodeResponse = $this->api->getEpisode($history->show['ids']['trakt'], $history->episode['season'], $history->episode['number']);
+
+                    if ($episodeResponse !== null) {
+                        $value = $episodeResponse->runtime;
+                    }
+                }
+            }
+
+            UserData::updateOrCreate([
+                'user_id' => $user->id,
+                'service' => 'trakt',
+                'service_id' => $serviceId,
+                'attribute' => $attribute,
+                'date_id' => $dateId
+            ], [
+                'value' => $value
+            ]);
+            
+        }
+        
         return new StandardDTO(
             success: true
         );
