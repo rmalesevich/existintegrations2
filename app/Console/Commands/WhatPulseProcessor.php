@@ -4,7 +4,6 @@ namespace App\Console\Commands;
 
 use App\Models\User;
 use App\Models\UserData;
-use App\Models\WhatPulseUser;
 use App\Services\ExistService;
 use App\Services\WhatPulseService;
 use Illuminate\Console\Command;
@@ -42,7 +41,7 @@ class WhatPulseProcessor extends Command
      *
      * @return int
      */
-    public function handle(Logger $logger, WhatPulseService $whatpulse)
+    public function handle(Logger $logger, WhatPulseService $whatpulse, ExistService $exist)
     {
         $correlationId = (string) Str::uuid();
         $logger->info($correlationId . " beginning WhatPulseProcessor");
@@ -55,10 +54,10 @@ class WhatPulseProcessor extends Command
             $whatpulse->processPulses($user);
 
             // process any zero out requests to Exist
-            $whatpulse->sendToExist($user, true);
+            $exist->sendUserData($user, "whatpulse", true);
 
             // send the data to Exist
-            $whatpulse->sendToExist($user, false);
+            $exist->sendUserData($user, "whatpulse", false);
 
             // delete user data older than the base days
             $days = config('services.baseDays');
