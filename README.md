@@ -7,6 +7,8 @@ Laravel application that connects disparate data sources with [Exist.io](https:/
 To connect to the various services that use OAuth 2.0, you will need to add the following parameters to support the Client ID and Client Secret.
 
 ```php
+BASE_DAYS=7
+
 EXIST_CLIENT_ID=""
 EXIST_CLIENT_SECRET=""
 

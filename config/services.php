@@ -33,7 +33,7 @@ return [
 
     'roadmapUri' => 'https://changemap.co/exist-integrations/exist-integrations/',
 
-    'baseDays' => 7,
+    'baseDays' => env('BASE_DAYS'),
 
     // Configuration related to the integration with Exist
     'exist' => [
