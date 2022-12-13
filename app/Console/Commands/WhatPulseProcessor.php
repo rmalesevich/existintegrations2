@@ -60,7 +60,7 @@ class WhatPulseProcessor extends Command
             $exist->sendUserData($user, "whatpulse", false);
 
             // delete user data older than the base days
-            $days = config('services.baseDays');
+            $days = config('services.logDaysKept');
             $maxDate = date("Y-m-d", strtotime("-$days days"));
 
             UserData::where('user_id', $user->id)
