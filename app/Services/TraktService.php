@@ -155,6 +155,13 @@ class TraktService
             
             $serviceId = $history->id;
 
+            // if the record has already been processed, then ignore the check of the times to avoid unnecessary API calls to Trakt
+            $existed = UserData::where('user_id', $user->id)
+                ->where('service', 'trakt')
+                ->where('service_id', $serviceId)
+                ->count();
+            if ($existed == 1) continue;
+
             $historyDT = new Carbon($history->watched_at, "UTC");
             $historyDT->setTimezone($user->existUser->timezone);
             $dateId = $historyDT->format('Y-m-d');
