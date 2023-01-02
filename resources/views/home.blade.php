@@ -73,6 +73,11 @@
                     @endforeach
 
                     <div class="m-4 p-4">
+                        <div class="float-left">
+                            <a href="{{ route('logs') }}" class="inline-block px-6 py-2 border-2 border-blue-600 text-blue-600 font-medium text-xs leading-tight uppercase rounded hover:bg-black hover:bg-opacity-5 focus:outline-none focus:ring-0 transition duration-150 ease-in-out">
+                                Display Logs
+                            </a>
+                        </div>
                         <div class="float-right">
                             <a href="{{ route('add') }}" class="inline-block px-6 py-2 border-2 border-blue-600 text-blue-600 font-medium text-xs leading-tight uppercase rounded hover:bg-black hover:bg-opacity-5 focus:outline-none focus:ring-0 transition duration-150 ease-in-out">
                                 + Add New Integration

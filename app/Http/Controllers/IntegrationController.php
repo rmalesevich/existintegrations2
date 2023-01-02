@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\DB;
+
 class IntegrationController extends Controller
 {
     public function __construct()
@@ -39,6 +41,26 @@ class IntegrationController extends Controller
         return view('add', [
             'user' => auth()->user(),
             'integrations' => collect(config('services.integrations'))
+        ]);
+    }
+
+    public function logs()
+    {
+        $userData = DB::table('user_data')
+            ->select('service', 'date_id', 'attribute', 'value', 'response as message', 'updated_at')
+            ->where('user_id', auth()->user()->id);
+
+        $logs = DB::table('service_logs')
+            ->select('service', DB::raw('null as date_id'), DB::raw('null as attribute'), DB::raw('null as value'), 'message', 'updated_at')
+            ->where('user_id', auth()->user()->id)
+            ->union($userData)
+            ->orderBy('updated_at', 'desc')
+            ->orderBy('date_id', 'desc')
+            ->get();
+
+        return view('logs', [
+            'user' => auth()->user(),
+            'logs' => $logs
         ]);
     }
 }
