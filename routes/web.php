@@ -30,6 +30,7 @@ Route::get('/dashboard', function () {
 // Integration Routes (Home Status, Add)
 Route::get('/home', [IntegrationController::class, 'home'])->name('home');
 Route::get('/add', [IntegrationController::class, 'add'])->name('add');
+Route::get('/logs', [IntegrationController::class, 'logs'])->name('logs');
 
 require __DIR__.'/auth.php';
 
