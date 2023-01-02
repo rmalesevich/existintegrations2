@@ -11,6 +11,9 @@ use Illuminate\Http\Request;
 
 class TraktController extends Controller
 {
+    private $trakt;
+    private $exist;
+    
     public function __construct(TraktService $trakt, ExistService $exist)
     {
         $this->middleware('auth');

@@ -53,6 +53,11 @@ class TraktProcessor extends Command
         foreach ($users as $user) {
             $trakt->processHistory($user);
 
+            // get the users again incase any user is now unauthorized
+            $users = User::has('existUser')
+                ->has('traktUser')
+                ->get();
+
             // process any zero out requests to Exist
             $exist->sendUserData($user, "trakt", true);
 

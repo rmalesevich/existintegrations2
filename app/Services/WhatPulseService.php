@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\ServiceLog;
 use App\Models\User;
 use App\Models\UserAttribute;
 use App\Models\UserData;
@@ -13,7 +14,8 @@ use Illuminate\Support\Facades\Log;
 
 class WhatPulseService
 {
-    public $api;
+    private $api;
+    private $exist;
 
     public function __construct(WhatPulseApiService $api, ExistService $exist)
     {
@@ -52,6 +54,12 @@ class WhatPulseService
             'is_new' => true
         ]);
 
+        ServiceLog::create([
+            'user_id' => $user->id,
+            'service' => 'whatpulse',
+            'message' => 'Connected to WhatPulse'
+        ]);
+
         return new StandardDTO(
             success: true
         );
@@ -76,6 +84,12 @@ class WhatPulseService
             ->delete();
         
         Log::info(sprintf("WHATPULSE DISCONNECT: User ID %s via trigger %s", $user->id, $trigger));
+
+        ServiceLog::create([
+            'user_id' => $user->id,
+            'service' => 'trakt',
+            'message' => 'Disconnected from WhatPulse. Via trigger ' . $trigger
+        ]);
         
         return new StandardDTO(
             success: true
