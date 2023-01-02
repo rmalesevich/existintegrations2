@@ -2,6 +2,7 @@
 
 namespace App\Services\ApiIntegrations;
 
+use App\Models\ServiceLog;
 use App\Models\User;
 use App\Objects\ApiRequestDTO;
 use App\Objects\Trakt\TraktAccountProfileDTO;
@@ -14,6 +15,9 @@ use Carbon\Carbon;
 
 class TraktApiService extends AbstractApiService
 {
+    private $clientId;
+    private $clientSecret;
+    
     public function __construct()
     {
         $this->clientId = env('TRAKT_CLIENT_ID');
@@ -128,6 +132,8 @@ class TraktApiService extends AbstractApiService
      * Retrieve the watch history from the user.
      * Reference URL: https://trakt.docs.apiary.io/#reference/users/history/get-watched-history
      * 
+     * Includes logic to handle 401 Unauthorized from Trakt
+     * 
      * @param User $user
      * @param DateTime $startAt
      * @param DateTime $endAt
@@ -153,6 +159,14 @@ class TraktApiService extends AbstractApiService
         $historyResponse = $this->request($apiRequest);
         if ($historyResponse->success && $historyResponse->responseBody !== null) {
             return TraktHistoryDTO::fromRequest($historyResponse->responseBody);
+        } else if (!$historyResponse->success && $historyResponse->statusCode == 401) {
+            ServiceLog::create([
+                'user_id' => $user->id,
+                'service' => 'trakt',
+                'unauthorized' => true
+            ]);
+
+            return null;
         } else {
             return null;
         }

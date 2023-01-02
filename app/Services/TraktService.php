@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\ServiceLog;
 use App\Models\TraktUser;
 use App\Models\User;
 use App\Models\UserAttribute;
@@ -59,6 +60,12 @@ class TraktService
                 'username' => $accountProfileResponse->username
             ]);
 
+        ServiceLog::create([
+            'user_id' => $user->id,
+            'service' => 'trakt',
+            'message' => 'Connected to Trakt'
+        ]);
+
         return new StandardDTO(
             success: true
         );
@@ -69,9 +76,10 @@ class TraktService
      * 
      * @param User $user
      * @param string $trigger
+     * @param bool $unauthorized
      * @return StandardDTO
      */
-    public function disconnect(User $user, string $trigger = ""): StandardDTO
+    public function disconnect(User $user, string $trigger = "", bool $unauthorized = false): StandardDTO
     {
         UserData::where('user_id', $user->id)
             ->where('service', 'trakt')
@@ -83,6 +91,14 @@ class TraktService
             ->delete();
         
         Log::info(sprintf("TRAKT DISCONNECT: User ID %s via trigger %s", $user->id, $trigger));
+
+        if (!$unauthorized) {
+            ServiceLog::create([
+                'user_id' => $user->id,
+                'service' => 'trakt',
+                'message' => 'Disconnected from Trakt. Via trigger ' . $trigger
+            ]);
+        }
         
         return new StandardDTO(
             success: true
@@ -139,6 +155,22 @@ class TraktService
 
         $historyResponse = $this->api->getHistory($user, $startAt, $endAt);
         if ($historyResponse === null) {
+            $unauthorizedCount = ServiceLog::where('user_id', $user->id)
+                ->where('service', 'trakt')
+                ->where('unauthorized', true)
+                ->whereNull('message')
+                ->count();
+
+            if ($unauthorizedCount > 0) {
+                ServiceLog::where('user_id', $user->id)
+                    ->where('service', 'trakt')
+                    ->where('unauthorized', true)
+                    ->whereNull('message')
+                    ->update(['message' => 'Authorization revoked']);
+
+                $this->disconnect($user, "Authorization revoked", true);
+            }
+            
             return new StandardDTO(
                 success: false,
                 message: __('app.traktHistoryError')
