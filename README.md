@@ -8,6 +8,9 @@ To connect to the various services that use OAuth 2.0, you will need to add the 
 
 ```php
 BASE_DAYS=7
+LOG_DAYS_KEPT=10
+
+MESSAGE_CONTENT=""
 
 EXIST_CLIENT_ID=""
 EXIST_CLIENT_SECRET=""
@@ -15,6 +18,16 @@ EXIST_CLIENT_SECRET=""
 TRAKT_CLIENT_ID=""
 TRAKT_CLIENT_SECRET=""
 ```
+
+## Base Days and Log Days Kept
+
+The BASE_DAYS is how many days will be processed for each user when the Processors run.
+
+The LOG_DAYS_KEPT is how many days the user_data logs will be kept. It must be greater than the BASE_DAYS due to weird timezone processing.
+
+## Global Message
+
+If you want to display a message to the end users you can set the MESSAGE_CONTENT environment variable. It will display on the logged in page.
 
 ## UI Elements
 
