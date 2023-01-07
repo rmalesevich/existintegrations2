@@ -20,7 +20,9 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     if (auth()->user() !== null) return redirect()->route('home');
     
-    return view('landing');
+    return view('landing', [
+        'integrations' => collect(config('services.integrations'))
+    ]);
 });
 
 Route::get('/dashboard', function () {
