@@ -55,3 +55,12 @@ Route::delete('/services/trakt/disconnect', [TraktController::class, 'disconnect
 Route::get('/services/trakt/manage', [TraktController::class, 'manage'])->name('trakt.manage');
 Route::post('/services/trakt/setAttributes', [TraktController::class, 'setAttributes'])->name('trakt.setAttributes');
 Route::post('/services/trakt/zero', [TraktController::class, 'zero'])->name('trakt.zero');
+
+// Static Routes
+Route::get('/privacy', function() {
+    return view('static.privacypolicy');
+})->name('privacypolicy');
+
+Route::get('/integrations', function() {
+    return view('static.integrations');
+})->name('integrations');
