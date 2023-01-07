@@ -20,7 +20,7 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     if (auth()->user() !== null) return redirect()->route('home');
     
-    return view('landing', [
+    return view('static.landing', [
         'integrations' => collect(config('services.integrations'))
     ]);
 })->name('landing');
@@ -49,6 +49,9 @@ Route::delete('/services/whatpulse/disconnect', [WhatPulseController::class, 'di
 Route::get('/services/whatpulse/manage', [WhatPulseController::class, 'manage'])->name('whatpulse.manage');
 Route::post('/services/whatpulse/setAttributes', [WhatPulseController::class, 'setAttributes'])->name('whatpulse.setAttributes');
 Route::post('/services/whatpulse/zero', [WhatPulseController::class, 'zero'])->name('whatpulse.zero');
+Route::get('/integrations/whatpulse', function() {
+    return view('static.integrationswhatpulse');
+})->name('integrations.whatpulse');
 
 // Trakt Routes
 Route::get('/services/trakt/connect', [TraktController::class, 'connect'])->name('trakt.connect');
@@ -57,8 +60,11 @@ Route::delete('/services/trakt/disconnect', [TraktController::class, 'disconnect
 Route::get('/services/trakt/manage', [TraktController::class, 'manage'])->name('trakt.manage');
 Route::post('/services/trakt/setAttributes', [TraktController::class, 'setAttributes'])->name('trakt.setAttributes');
 Route::post('/services/trakt/zero', [TraktController::class, 'zero'])->name('trakt.zero');
+Route::get('/integrations/trakt', function() {
+    return view('static.integrationstrakt');
+})->name('integrations.trakt');
 
-// Static Routes
+// Generic Static Routes
 Route::get('/privacy', function() {
     return view('static.privacypolicy');
 })->name('privacypolicy');
@@ -68,7 +74,7 @@ Route::get('/integrations', function() {
 })->name('integrations');
 
 Route::get('/about', function () {
-    return view('landing', [
+    return view('static.landing', [
         'integrations' => collect(config('services.integrations'))
     ]);
 })->name('about');

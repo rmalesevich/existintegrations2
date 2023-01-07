@@ -34,6 +34,8 @@ return [
     'zeroOutText' => 'If you are experiencing issues with the data that has been sent to Exist for :service, you can initiate a Zero Out of the data for the last ' . config('services.baseDays') . ' days. On the next processing of :service data, it will first zero out the records in Exist and replace them with the latest information from :service.',
     'zeroOutConfirm' => 'Are you sure you want to zero out your data for these attributes?',
     'zeroOutSuccess' => ':service attributes will be reset for the last :days days',
+    'addNewIntegrationButton' => '+ Add New Integration',
+    'manageIntegrationText' => 'Manage :service Settings',
 
     // WHATPULSE ERRORS
     'whatpulsePulseError' => 'Error loading the pulses for this user',

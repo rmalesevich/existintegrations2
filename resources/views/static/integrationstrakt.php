@@ -15,8 +15,7 @@
                     </p>
 
                     <ul class="mb-4 list-disc list-inside">
-                        <li><a href="{{ route('integrations.whatpulse') }}" class="text-blue-500 hover:text-blue-700 transition duration-300 ease-in-out mb-4">WhatPulse</a></li>
-                        <li><a href="{{ route('integrations.trakt') }}" class="text-blue-500 hover:text-blue-700 transition duration-300 ease-in-out mb-4">Trakt</a></li>
+                        <li><a href="{{ route('integrations.whatpulse') }}">WhatPulse</a></li>
                     </ul>
 
                 </div>
