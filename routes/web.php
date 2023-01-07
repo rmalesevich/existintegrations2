@@ -24,7 +24,7 @@ Route::get('/', function () {
 });
 
 Route::get('/dashboard', function () {
-    return view('dashboard');
+    return redirect('home');
 })->middleware(['auth'])->name('dashboard');
 
 // Integration Routes (Home Status, Add)
