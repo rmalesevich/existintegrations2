@@ -23,7 +23,7 @@ Route::get('/', function () {
     return view('landing', [
         'integrations' => collect(config('services.integrations'))
     ]);
-});
+})->name('landing');
 
 Route::get('/dashboard', function () {
     return redirect('home');
@@ -66,3 +66,9 @@ Route::get('/privacy', function() {
 Route::get('/integrations', function() {
     return view('static.integrations');
 })->name('integrations');
+
+Route::get('/about', function () {
+    return view('landing', [
+        'integrations' => collect(config('services.integrations'))
+    ]);
+})->name('about');

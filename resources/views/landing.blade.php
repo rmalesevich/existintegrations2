@@ -48,9 +48,11 @@
                         <a href="{{ config('services.roadmapUri') }}" class="text-blue-500 hover:text-blue-700 transition duration-300 ease-in-out mb-4">More integrations and improvements</a> are always being worked on!
                     </p>
 
+                @if (auth()->user() === null)
                     <p class="mb-4">
                         <a href="{{ route('register') }}" class="text-blue-500 hover:text-blue-700 transition duration-300 ease-in-out mb-4">Register</a> today! Exist Integrations is a <strong>completely free service</strong>.
                     </p>
+                @endif
 
                 </div>
             </div>
