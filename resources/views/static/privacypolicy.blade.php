@@ -58,7 +58,7 @@
                     </p>
 
                     <p class="mb-4">
-                        Any user data that is sent to Exist is stored on Exist Integrations for only 21  days before it is purged.
+                        Any user data that is sent to Exist is stored on Exist Integrations for only {{ env('LOG_DAYS_KEPT') }} days before it is purged.
                     </p>
 
                     <h3 class="font-semibold text-xl text-gray-800 leading-tight mb-4">

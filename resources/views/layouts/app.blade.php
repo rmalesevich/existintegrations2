@@ -28,7 +28,7 @@
             <main>
                 {{ $slot }}
             </main>
-            <div class="text-center mt-1">
+            <div class="text-center">
                 <a href="{{ route('privacypolicy') }}" class="text-blue-500 hover:text-blue-700 transition duration-300 ease-in-out mb-4">Privacy Policy</a>
                 |
                 <a href="{{ route('integrations') }}" class="text-blue-500 hover:text-blue-700 transition duration-300 ease-in-out mb-4">Integrations</a>
