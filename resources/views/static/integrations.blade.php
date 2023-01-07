@@ -11,7 +11,7 @@
                 <div class="p-6 bg-white border-b border-gray-200">
                     
                     <p>
-                        Exist Integrations is pretty neat!
+                        This information applies to all information collected or submitted to the Exist Integrations website.
                     </p>
 
                 </div>
