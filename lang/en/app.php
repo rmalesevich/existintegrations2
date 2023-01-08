@@ -8,6 +8,7 @@ return [
     // MULTI-USE TEXT
     'initiateConnect' => 'Connect to :service',
     'accountProfileAPIFail' => 'Failed to retrieve profile information for your account from :service',
+    'categoryAPIFail' => 'Failed to retrieve :category for your account from :service',
     'unknownError' => 'Unknown error occurred.',
     'serviceDisconnect' => 'Exist Integrations has been successfully disconnected from your :service account',
 

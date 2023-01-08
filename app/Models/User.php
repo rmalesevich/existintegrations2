@@ -52,6 +52,9 @@ class User extends Authenticatable
             case "trakt":
                 return ($this->traktUser !== null);
                 break;
+            case "ynab":
+                return ($this->ynabUser !== null);
+                break;
             default:
                 return false;
                 break;
@@ -76,6 +79,16 @@ class User extends Authenticatable
     public function traktUser()
     {
         return $this->hasOne(TraktUser::class);
+    }
+
+    /**
+     * Retrieve the Ynab object associated with this User
+     * 
+     * @return YnabUser
+     */
+    public function ynabUser()
+    {
+        return $this->hasOne(YnabUser::class);
     }
 
     /**
