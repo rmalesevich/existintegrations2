@@ -11,23 +11,23 @@
                 <div class="p-6 bg-white border-b border-gray-200">
                     
                 <h3 class="font-semibold text-xl text-gray-800 leading-tight mb-4">
-                        Connect to Trakt
+                        Connect to YNAB
                     </h3>    
                 
                     <p class="mb-4">
-                        To connect Exist Integrations to Trakt, you will have to go through the OAuth workflow from Trakt.
+                        To connect Exist Integrations to YNAB, you will have to go through the OAuth workflow from YNAB.
                     </p>
 
                     <p class="mb-4">
-                        From the Exist Integrations home press the {{ __('app.addNewIntegrationButton') }} button. Scroll down to Trakt, and press the {{ __('app.initiateConnect', ['service' => 'Trakt']) }} button. You will be sent to Trakt. When requested authorize Exist Integrations. You will be redirected back to Exist Integrations.
+                        From the Exist Integrations home press the {{ __('app.addNewIntegrationButton') }} button. Scroll down to YNAB, and press the {{ __('app.initiateConnect', ['service' => 'YNAB']) }} button. You will be sent to YNAB. When requested authorize Exist Integrations. You will be redirected back to Exist Integrations.
                     </p>
 
                     <h3 class="font-semibold text-xl text-gray-800 leading-tight mb-4">
-                        {{ __('app.manageIntegrationText', ['service' => 'Trakt']) }}
+                        {{ __('app.manageIntegrationText', ['service' => 'YNAB']) }}
                     </h3>
 
                     <p class="mb-4">
-                        After you have connected to Trakt, you must set the attributes you want sent to Exist.
+                        After you have connected to YNAB, you must set the configure each Budget Category to one of the Exist attributes.
                     </p>
 
                     <h3 class="font-semibold text-xl text-gray-800 leading-tight mb-4">
@@ -35,17 +35,15 @@
                     </h3>
 
                     <ul class="mb-4 list-disc list-inside">
-                        <li>Watching TV - the total time watching television shows will be sent to the official watching TV attribute</li>
-                        <li>Watching Movies - the total time watching movies will be sent to a custom attribute in Exist</li>
+                        <li>Money spent - the total money spent on a given day sent to the official Exist attribute</li>
+                        <li>Money earned - the total money earned on a given day sent to a custom attribute in Exist</li>
+                        <li>Money saved - the total money saved on a given day sent to a custom attribute in Exist</li>
                     </ul>
 
                     <p class="mb-4">
-                        Select the attributes you wish to send to Exist and press the {{ __('app.attributeButton', ['service' => 'Trakt']) }} button.
+                        Configure the attributes you wish to send to Exist and press the {{ __('app.attributeButton', ['service' => 'YNAB']) }} button.
                     </p>
 
-                    <p class="mb-4">
-                        Note, in the old version of Exist Integrations when you selected to include both TV and movies it would aggregate the totals into the Watching TV attribute. With the creation of custom attributes, once you configure Exist Integrations it will split the totals in the two attributes. Historical data sent to Exist will not be changed outside of the {{ env('BASE_DAYS') }} days.
-                    </p>
 
                     <h3 class="font-semibold text-xl text-gray-800 leading-tight mb-4">
                         {{ __('app.zeroOutHeader') }}
@@ -64,15 +62,11 @@
                     </h3>
 
                     <p class="mb-4">
-                        The Trakt Processor runs every hour at 30 minutes past the hour. It will execute the following sequence:
+                        The YNAB Processor runs every hour at 30 minutes past the hour. It will execute the following sequence:
                     </p>
 
                     <ul class="mb-4 list-disc list-inside">
-                        <li>Download all watch history from Trakt for the last {{ env('BASE_DAYS') }} days.</li>
-                        <li>Save a record in the Exist Integrations database for each new watch history and selected attribute combinations.</li>
-                        <li>Check if the {{ __('app.zeroOutHeader') }} was triggered. If it is, the attributes will be reset to 0 on Exist for the last {{ env('BASE_DAYS') }} days.</li>
-                        <li>Increment the attribute value in Exist for each watch history by day.</li>
-                        <li>Purge any data linked to your Trakt user over than {{ env('LOG_DAYS_KEPT') }} days.</li>
+                        <li>To be completed</li>
                     </ul>
 
                     <h3 class="font-semibold text-xl text-gray-800 leading-tight mb-4">

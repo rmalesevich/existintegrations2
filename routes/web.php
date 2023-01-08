@@ -4,6 +4,7 @@ use App\Http\Controllers\IntegrationController;
 use App\Http\Controllers\Integrations\ExistController;
 use App\Http\Controllers\Integrations\TraktController;
 use App\Http\Controllers\Integrations\WhatPulseController;
+use App\Http\Controllers\Integrations\YnabController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -63,6 +64,17 @@ Route::post('/services/trakt/zero', [TraktController::class, 'zero'])->name('tra
 Route::get('/integrations/trakt', function() {
     return view('static.integrationstrakt');
 })->name('integrations.trakt');
+
+// YNAB Routes
+Route::get('/services/ynab/connect', [YnabController::class, 'connect'])->name('ynab.connect');
+Route::get('/services/ynab/connected', [YnabController::class, 'connected'])->name('ynab.connected');
+Route::delete('/services/ynab/disconnect', [YnabController::class, 'disconnect'])->name('ynab.disconnect');
+Route::get('/services/ynab/manage', [YnabController::class, 'manage'])->name('ynab.manage');
+Route::post('/services/ynab/setAttributes', [YnabController::class, 'setAttributes'])->name('ynab.setAttributes');
+Route::post('/services/ynab/zero', [YnabController::class, 'zero'])->name('ynab.zero');
+Route::get('/integrations/ynab', function() {
+    return view('static.integrationsynab');
+})->name('integrations.ynab');
 
 // Generic Static Routes
 Route::get('/privacy', function() {

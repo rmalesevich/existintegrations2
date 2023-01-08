@@ -146,6 +146,15 @@ class TraktService
      */
     public function processHistory(User $user): StandardDTO
     {
+        $userToken = $this->checkToken($user);
+        if ($userToken->success) {
+            $user = User::find($user->id);
+        } else {
+            return new StandardDTO(
+                success: false
+            );
+        }
+        
         $days = config('services.baseDays') * -1;
 
         $startAt = new Carbon();
