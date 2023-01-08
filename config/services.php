@@ -79,7 +79,7 @@ return [
         ]
     ],
 
-    //Configuration related to the integration with Trakt
+    // Configuration related to the integration with Trakt
     'trakt' => [
         'key' => 'trakt',
         'authUri' => 'https://trakt.tv/oauth/authorize',
@@ -102,6 +102,29 @@ return [
         ]
     ],
 
+    // Configuration related to the integration with Trakt
+    'ynab' => [
+        'key' => 'ynab',
+        'authUri' => 'https://app.youneedabudget.com/oauth/authorize',
+        'tokenUri' => 'https://app.youneedabudget.com/oauth/token',
+        'baseUri' => 'https://api.youneedabudget.com/v1',
+        'attributes' => [
+            [
+                'attribute' => 'money_spent',
+                'template' => 'money_spent',
+                'label' => 'Money spent',
+                'group' => 'finance',
+                'value_type' => 1
+            ], [
+                'attribute' => 'money_earned',
+                'template' => null,
+                'label' => 'Money Earned',
+                'group' => 'finance',
+                'value_type' => 1
+            ]
+        ]
+    ],
+
     // Array with all of the officially supported integrations
     'integrations' => [
         [
@@ -117,6 +140,13 @@ return [
             'outputName' => 'Trakt',
             'logo' => '/images/trakt.png',
             'description' => 'Trakt is a platform that keeps track of the TV shows and movies you watch. Your watch history can be pulled through their API and mapped to total media time attributes on Exist through Exist Integrations',
+            'enabled' => true
+        ], [
+            'service' => 'ynab',
+            'userMethod' => 'ynabUser',
+            'outputName' => 'YNAB',
+            'logo' => '/images/ynab.svg',
+            'description' => 'You Need a Budget (YNAB) categorizes your money input/output into monthly budgets. Your transaction totals can be pulled into financial attributes on Exist through Exist Integrations.',
             'enabled' => true
         ]
     ]
