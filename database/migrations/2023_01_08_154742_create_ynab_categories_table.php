@@ -20,7 +20,7 @@ return new class extends Migration
             $table->string('category_id');
             $table->string('category_name');
             $table->boolean('deleted_flag');
-            $table->boolean('included_flag');
+            $table->string('attribute')->nullable();
             $table->timestamps();
 
             $table->foreign('user_id')

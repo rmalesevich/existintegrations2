@@ -61,29 +61,13 @@ class YnabService
                 'username' => $userResponse->id
             ]);
 
-        // get the categories from YNAB
-        $categoryResponse = $this->api->getCategories($user);
-        if ($categoryResponse === null || $categoryResponse->data === null) {
+        $categoryResponse = $this->processCategories($user);
+        if (!$categoryResponse->success) {
             YnabUser::find($user->ynabUser->id)->delete();
             return new StandardDTO(
                 success: false,
                 message: __('app.categoryAPIFail', ['category' => 'Categories', 'service' => 'YNAB'])
             );
-        }
-
-        foreach($categoryResponse->data['category_groups'] as $categoryGroup) {
-            $categoryGroupName = $categoryGroup['name'];
-
-            foreach ($categoryGroup['categories'] as $category) {
-                YnabCategory::create([
-                    'user_id' => $user->id,
-                    'category_group_name' => $categoryGroupName,
-                    'category_id' => $category['id'],
-                    'category_name' => $category['name'],
-                    'deleted_flag' => $category['deleted'],
-                    'included_flag' => false
-                ]);
-            }
         }
 
         ServiceLog::create([
@@ -158,6 +142,51 @@ class YnabService
                     'refresh_token' => $refreshTokenResponse->refresh_token,
                     'token_expires' => date('Y-m-d H:i:s', (time() + $refreshTokenResponse->expires_in))
                 ]);
+        }
+
+        return new StandardDTO(
+            success: true
+        );
+    }
+
+    /**
+     * Process the Categories from YNAB into the database
+     * 
+     * @param User $user
+     * @return StandardDTO
+     */
+    public function processCategories(User $user): StandardDTO
+    {
+        $userToken = $this->checkToken($user);
+        if ($userToken->success) {
+            $user = User::find($user->id);
+        } else {
+            return new StandardDTO(
+                success: false
+            );
+        }
+        
+        // get the categories from YNAB
+        $categoryResponse = $this->api->getCategories($user);
+        if ($categoryResponse === null || $categoryResponse->data === null) {
+            return new StandardDTO(
+                success: false,
+                message: __('app.categoryAPIFail', ['category' => 'Categories', 'service' => 'YNAB'])
+            );
+        }
+
+        foreach($categoryResponse->data['category_groups'] as $categoryGroup) {
+            $categoryGroupName = $categoryGroup['name'];
+
+            foreach ($categoryGroup['categories'] as $category) {
+                YnabCategory::updateOrCreate([
+                    'user_id' => $user->id,
+                    'category_group_name' => $categoryGroupName,
+                    'category_id' => $category['id'],
+                    'category_name' => $category['name'],
+                    'deleted_flag' => $category['deleted']
+                ]);
+            }
         }
 
         return new StandardDTO(

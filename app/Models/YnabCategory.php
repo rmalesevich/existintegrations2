@@ -17,7 +17,7 @@ class YnabCategory extends Model
         'category_id',
         'category_name',
         'deleted_flag',
-        'included_flag'
+        'attribute'
     ];
 
     public function user()
