@@ -104,4 +104,25 @@ class YnabController extends Controller
         ]);
     }
 
+    /**
+     * ROUTE: /services/ynab/zero
+     * METHOD: POST
+     */
+    public function zero()
+    {
+        if (auth()->user()->existUser === null || auth()->user()->ynabUser === null) return redirect()->route('home');
+
+        $days = config('services.baseDays');
+        $userAttributes = UserAttribute::where('user_id', auth()->user()->id)
+            ->where('integration', 'ynab')
+            ->get();
+
+        foreach ($userAttributes as $attribute) {
+            $this->exist->zeroUserData(auth()->user(), 'ynab', $attribute->attribute, $days);
+        }
+
+        return redirect()->route('ynab.manage')
+            ->with('successMessage', __('app.zeroOutSuccess', ['service' => 'YNAB', 'days' => $days]));
+    }
+
 }

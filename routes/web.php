@@ -70,6 +70,7 @@ Route::get('/services/ynab/connect', [YnabController::class, 'connect'])->name('
 Route::get('/services/ynab/connected', [YnabController::class, 'connected'])->name('ynab.connected');
 Route::delete('/services/ynab/disconnect', [YnabController::class, 'disconnect'])->name('ynab.disconnect');
 Route::get('/services/ynab/manage', [YnabController::class, 'manage'])->name('ynab.manage');
+Route::post('/services/ynab/zero', [YnabController::class, 'zero'])->name('ynab.zero');
 
 // Generic Static Routes
 Route::get('/privacy', function() {
