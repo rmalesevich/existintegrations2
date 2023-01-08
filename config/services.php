@@ -118,7 +118,13 @@ return [
             ], [
                 'attribute' => 'money_earned',
                 'template' => null,
-                'label' => 'Money Earned',
+                'label' => 'Money earned',
+                'group' => 'finance',
+                'value_type' => 1
+            ], [
+                'attribute' => 'money_saved',
+                'template' => null,
+                'label' => 'Money saved',
                 'group' => 'finance',
                 'value_type' => 1
             ]

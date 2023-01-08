@@ -37,6 +37,7 @@ return [
     'zeroOutSuccess' => ':service attributes will be reset for the last :days days',
     'addNewIntegrationButton' => '+ Add New Integration',
     'manageIntegrationText' => 'Manage :service Settings',
+    'dropdownIgnore' => 'Ignore',
 
     // WHATPULSE ERRORS
     'whatpulsePulseError' => 'Error loading the pulses for this user',

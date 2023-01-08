@@ -194,4 +194,29 @@ class YnabService
         );
     }
 
+    /**
+     * Update the Category in the database based on the user's management of the YNAB configuration
+     * 
+     * @param User $user
+     * @param string $categoryId
+     * @param string $attribute
+     * @return StandardDTO
+     */
+    public function updateCategory(User $user, string $categoryId, string $attribute): StandardDTO
+    {
+        if ($attribute == __('app.dropdownIgnore') ) {
+            $attribute = null;
+        }
+        
+        YnabCategory::where('user_id', $user->id)
+            ->where('category_id', $categoryId)
+            ->update([
+                'attribute' => $attribute
+            ]);
+
+        return new StandardDTO(
+            success: true
+        );
+    }
+
 }

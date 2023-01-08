@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Integrations;
 
 use App\Http\Controllers\Controller;
 use App\Models\UserAttribute;
+use App\Models\YnabCategory;
+use App\Models\YnabUser;
 use App\Services\ExistService;
 use App\Services\YnabService;
 use Illuminate\Http\Request;
@@ -97,11 +99,60 @@ class YnabController extends Controller
     {
         if (auth()->user()->ynabUser === null) return redirect()->route('home');
 
+        $categories = YnabCategory::where('user_id', auth()->user()->id)
+            ->where('deleted_flag', false)
+            ->get();
+
         return view('manage.ynab', [
             'user' => auth()->user(),
             'userAttributes' => auth()->user()->attributes->where('integration', 'ynab')->where('user_id', auth()->user()->id),
-            'attributes' => collect(config('services.ynab.attributes'))
+            'attributes' => collect(config('services.ynab.attributes')),
+            'categories' => $categories
         ]);
+    }
+
+    /**
+     * ROUTE: /services/ynab/setAttributes
+     * METHOD: POST
+     */
+    public function setAttributes(Request $request)
+    {
+        if (auth()->user()->existUser === null || auth()->user()->ynabUser === null) return redirect()->route('home');
+
+        $attributes = array();
+        foreach (collect(config('services.ynab.attributes')) as $attribute) {
+            if (!isset($attributes[$attribute['attribute']])) {
+                array_push($attributes, [
+                    'attribute' => $attribute['attribute']
+                ]);
+            }
+        }
+
+        $setAttributesResponse = $this->exist->setAttributes(auth()->user(), 'ynab', $attributes, auth()->user()->ynabUser->is_new);
+        if ($setAttributesResponse->success) {
+            $successMessage = __('app.attributeSuccess');
+
+            if (auth()->user()->ynabUser->is_new) {
+                YnabUser::where('user_id', auth()->user()->id)
+                    ->update([
+                        'is_new' => false
+                    ]);
+            }
+
+            $keys = array_keys($request->category);
+            foreach ($keys as $categoryId) {
+                $attribute = $request->category[$categoryId];
+
+                $this->ynab->updateCategory(auth()->user(), $categoryId, $attribute);
+            }
+
+        } else {
+            $errorMessage = $setAttributesResponse->message ?? __('app.unknownError');
+        }
+
+        return redirect()->route('ynab.manage')
+            ->with('successMessage', $successMessage ?? null)
+            ->with('errorMessage', $errorMessage ?? null);   
     }
 
     /**

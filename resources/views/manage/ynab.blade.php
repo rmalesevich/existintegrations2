@@ -34,6 +34,53 @@
                         </h3>
                     </div>
 
+                    <div class="mb-12">
+                        <div class="text-sm text-gray-900">
+                            <h3 class="font-semibold text-xl text-gray-800 leading-tight mb-4">
+                                {{ __('app.attributeHeader') }}
+                            </h3>
+                            <form action="{{ route('ynab.setAttributes') }}" method="post">
+                            @csrf
+                                <div class="mb-4">
+                                @foreach ($categories as $category)
+                                    <div class="mb-3 xl:w-96">
+                                        <label for="category-{{ $category->category_id }}" class="form-label inline-block mb-2 text-gray-700">
+                                            {{ $category->category_group_name }} - {{ $category->category_name }}
+                                            @if ($category->deleted_flag)
+                                                (marked as deleted in YNAB)
+                                            @endif
+                                        </label>
+                                            <select id="category-{{ $category->category_id }}" name="category[{{ $category->category_id }}]" class="form-select appearance-none block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding bg-no-repeat border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none">
+                                                
+
+                                                <option value="{{ __('app.dropdownIgnore') }}" 
+                                                    @if ($category->attribute === null) 
+                                                         selected="selected"
+                                                    @endif
+                                                >{{ __('app.dropdownIgnore') }}</option>
+                                                @foreach ($attributes as $attribute)
+                                                    <option value="{{ $attribute['attribute'] }}"
+                                                        @if ($category->attribute == $attribute['attribute'])
+                                                            selected="selected"
+                                                        @endif
+                                                    >{{ $attribute['label'] }}</option>
+                                                @endforeach
+                                            </select>
+                                    </div>
+                                @endforeach
+
+                                </div>
+
+                                <button 
+                                    type="submit" 
+                                    title="{{ __('app.attributeButtonTitle', ['service' => 'Trakt']) }}"
+                                    class="inline-block px-6 py-2.5 bg-green-500 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-green-600 hover:shadow-lg focus:bg-green-600 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-green-700 active:shadow-lg transition duration-150 ease-in-out">
+                                    {{ __('app.attributeButton', ['service' => 'WhatPulse']) }}
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+
                     <div class="mb-4">
                         <h3 class="font-semibold text-xl text-gray-800 leading-tight mb-4">
                             {{ __('app.zeroOutHeader') }}
