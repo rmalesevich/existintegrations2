@@ -72,6 +72,9 @@ Route::delete('/services/ynab/disconnect', [YnabController::class, 'disconnect']
 Route::get('/services/ynab/manage', [YnabController::class, 'manage'])->name('ynab.manage');
 Route::post('/services/ynab/setAttributes', [YnabController::class, 'setAttributes'])->name('ynab.setAttributes');
 Route::post('/services/ynab/zero', [YnabController::class, 'zero'])->name('ynab.zero');
+Route::get('/integrations/ynab', function() {
+    return view('static.integrationsynab');
+})->name('integrations.ynab');
 
 // Generic Static Routes
 Route::get('/privacy', function() {
