@@ -156,6 +156,20 @@ class YnabController extends Controller
     }
 
     /**
+     * ROUTE: /services/ynab/refreshCategories
+     * METHOD: POST
+     */
+    public function refreshCategories()
+    {
+        if (auth()->user()->existUser === null || auth()->user()->ynabUser === null) return redirect()->route('home');
+
+        $this->ynab->processCategories(auth()->user());
+
+        return redirect()->route('ynab.manage')
+            ->with('successMessage', __('app.categoryAPISuccess', ['service' => 'YNAB', 'category' => 'Categories']));
+    }
+
+    /**
      * ROUTE: /services/ynab/zero
      * METHOD: POST
      */
