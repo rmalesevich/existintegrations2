@@ -62,12 +62,22 @@
                     </h3>
 
                     <p class="mb-4">
-                        The YNAB Processor runs every hour at 30 minutes past the hour. It will execute the following sequence:
+                        The YNAB Processor runs every hour at 45 minutes past the hour. It will execute the following sequence:
                     </p>
 
                     <ul class="mb-4 list-disc list-inside">
-                        <li>To be completed</li>
+                        <li>Download all transactions from YNAB for the last 14 days</li>
+                        <li>Check if the Category for the transaction is configured and identify the attribute</li>
+                        <li>If no records are in the user_data, save the value for the attribute</li>
+                        <li>If a record does exist, check if the date has changed. If the date has changed, send a negative value for the previous day and a positive value for the new day</li>
+                        <li>If a record does exist, and the value has changed, save a value that is the difference between what Exist Integrations has sent and what the value is from YNAB.</li>
+                        <li>Increment any of the new data in Exist</li>
+                        <li>Purge any data linked to your Trakt user over than {{ env('LOG_DAYS_KEPT') }} days.</li>
                     </ul>
+
+                    <p class="mb-4">
+                        Note: Exist Integrations no longer supports sub-transactions. Any transaction that is split will not be processed into Exist Integrations. Deleted transactions don't also seem to be sending to Exist Integrations, so if you notice differences please utilize the 'Correct Data Issues' section.
+                    </p>
 
                     <h3 class="font-semibold text-xl text-gray-800 leading-tight mb-4">
                         Disconnect

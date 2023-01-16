@@ -11,6 +11,7 @@ use App\Models\YnabUser;
 use App\Objects\StandardDTO;
 use App\Services\ApiIntegrations\YnabApiService;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class YnabService
@@ -127,8 +128,8 @@ class YnabService
     {
         $todaysDate = date('Y-m-d H:i:s');
 
-        if ($todaysDate >= $user->traktUser->token_expires) {
-            $refreshTokenResponse = $this->api->refreshToken($user->traktUser->refresh_token);
+        if ($todaysDate >= $user->ynabUser->token_expires) {
+            $refreshTokenResponse = $this->api->refreshToken($user->ynabUser->refresh_token);
             if ($refreshTokenResponse === null) {
                 return new StandardDTO(
                     success: false,
@@ -136,7 +137,7 @@ class YnabService
                 );
             }
 
-            YnabUser::find($user->traktUser->id)
+            YnabUser::find($user->ynabUser->id)
                 ->update([
                     'access_token' => $refreshTokenResponse->access_token,
                     'refresh_token' => $refreshTokenResponse->refresh_token,
@@ -217,6 +218,164 @@ class YnabService
         return new StandardDTO(
             success: true
         );
+    }
+
+    /**
+     * Process the Transactions for the User into the user_data
+     * 
+     * @param User $user
+     * @return StandardDTO
+     */
+    public function processTransactions(User $user): StandardDTO
+    {
+        $userToken = $this->checkToken($user);
+        if ($userToken->success) {
+            $user = User::find($user->id);
+        } else {
+            return new StandardDTO(
+                success: false
+            );
+        }
+
+        $days = config('services.baseDays') * -1;
+
+        $startAt = new Carbon();
+        $startAt->addDays($days);
+
+        $transactionResponse = $this->api->getTransactions($user, $startAt->format('Y-m-d'));
+        if ($transactionResponse === null) {
+            $unauthorizedCount = ServiceLog::where('user_id', $user->id)
+                ->where('service', 'ynab')
+                ->where('unauthorized', true)
+                ->whereNull('message')
+                ->count();
+
+            if ($unauthorizedCount > 0) {
+                ServiceLog::where('user_id', $user->id)
+                    ->where('service', 'ynab')
+                    ->where('unauthorized', true)
+                    ->whereNull('message')
+                    ->update(['message' => 'Authorization revoked']);
+
+                $this->disconnect($user, "Authorization revoked", true);
+            }
+            
+            return new StandardDTO(
+                success: false,
+                message: __('app.ynabHistoryError')
+            );
+        }
+
+        foreach ($transactionResponse->data['transactions'] as $transaction) {
+            // check the category
+            $category = YnabCategory::where('user_id', $user->id)
+                ->where('category_id', $transaction['category_id'])
+                ->where('deleted_flag', false)
+                ->whereNotNull('attribute')
+                ->first();
+
+            if ($category !== null) {
+                $service_id = $transaction['id'];
+                $date_id = $transaction['date'];
+                $attribute = $category->attribute;
+                $value = $transaction['amount'];
+                $deleted = $transaction['deleted'];
+                $this->processTransaction($user, $service_id, $attribute, $date_id, $value, $deleted);
+            }
+        }
+
+        return new StandardDTO(
+            success: true
+        );
+    }
+
+    /**
+     * Process the transaction by figuring out if it's already sent or has changed the totals
+     * 
+     * @param User $user
+     * @param string $service_id
+     * @param string $attribute
+     * @param string $date_id
+     * @param float $value
+     * @param bool $deleted
+     * @return StandardDTO
+     */
+    private function processTransaction(User $user, string $service_id, string $attribute, string $date_id, float $value, bool $deleted): StandardDTO
+    {
+        if ($attribute == "money_earned") {
+            $conversion = 1;
+        } else {
+            $conversion = -1;
+        }
+        $value = $value * $conversion;
+
+        if (!$deleted) {
+            $dataCheck = DB::table('user_data')
+                ->selectRaw('date_id, MAX(service_id2) AS id2, SUM(value) AS totalValue')
+                ->where('user_id', $user->id)
+                ->where('service', 'ynab')
+                ->where('service_id', $service_id)
+                ->groupBy('date_id')
+                ->get();
+
+            if ($dataCheck->count() == 0) {
+                // Scenario 1 - new record
+                $this->createUserData($user->id, $service_id, 1, $attribute, $date_id, $value);
+            } else {
+                // Scenario 2 - the Date Changed
+                if (!$dataCheck->contains('date_id', '=', $date_id)) {
+                    foreach ($dataCheck as $record) {
+                        $this->createUserData($user->id, $service_id, $record->id2 + 1, $attribute, $record->date_id, $record->totalValue * (-1));
+                    }
+                    $this->createUserData($user->id, $service_id, 1, $attribute, $date_id, $value);
+                } else {
+                    $record = $dataCheck->where('date_id', '=', $date_id)->first();
+                    if ($record->totalValue != $value) {
+                        $this->createUserData($user->id, $service_id, $record->id2 + 1, $attribute, $date_id, $value - $record->totalValue);
+                    }
+                }
+            }
+        } else {
+            dd($service_id);
+            $record = DB::table('user_data')
+                ->selectRaw('date_id, MAX(service_id2) AS id2, SUM(value) AS totalValue')
+                ->where('user_id', $user->id)
+                ->where('service', 'ynab')
+                ->where('service_id', $service_id)
+                ->where('date_id', $date_id)
+                ->groupBy('date_id')
+                ->first();
+            if ($record !== null && $record->totalValue != 0) {
+                $this->createUserData($user->id, $service_id, $record->id2 + 1, $attribute, $date_id, 0 - $record->totalValue);
+            }
+        }
+        
+        return new StandardDTO(
+            success: true
+        );
+    }
+
+    /**
+     * Create a new record in the user_data table for YNAB
+     * 
+     * @param string $user_id
+     * @param string $service_id
+     * @param string $service_id2
+     * @param string $attribute
+     * @param string $date_id
+     * @param int $value
+     */
+    private function createUserData(string $user_id, string $service_id, int $service_id2, string $attribute, string $date_id, int $value)
+    {
+        UserData::create([
+            'user_id' => $user_id,
+            'service' => 'ynab',
+            'service_id' => $service_id,
+            'service_id2' => $service_id2,
+            'attribute' => $attribute,
+            'date_id' => $date_id,
+            'value' => $value
+        ]);
     }
 
 }

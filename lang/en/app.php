@@ -46,4 +46,7 @@ return [
     
     // TRAKT ERRORS
     'traktHistoryError' => 'Error loading the history for this user',
+
+    // YNAB ERRORS
+    'ynabHistoryError' => 'Error loading the transactions for this user',
 ];

@@ -146,6 +146,16 @@ class YnabController extends Controller
                 $this->ynab->updateCategory(auth()->user(), $categoryId, $attribute);
             }
 
+            // zero out any data that has been sent if the categories change
+            $days = config('services.baseDays');
+            $userAttributes = UserAttribute::where('user_id', auth()->user()->id)
+                ->where('integration', 'ynab')
+                ->get();
+
+            foreach ($userAttributes as $attribute) {
+                $this->exist->zeroUserData(auth()->user(), 'ynab', $attribute->attribute, $days);
+            }
+
         } else {
             $errorMessage = $setAttributesResponse->message ?? __('app.unknownError');
         }

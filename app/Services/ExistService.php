@@ -393,10 +393,14 @@ class ExistService
         // build the total Payload
         $totalPayload = array();
         foreach ($userData as $data) {
+            $value = $data->value;
+            if ($integration == "ynab") {
+                $value = round($value / 1000, 2);
+            }
             array_push($totalPayload, [
                 'name' => $data->attribute,
                 'date' => $data->date_id,
-                'value' => $data->value
+                'value' => $value
             ]);
         }
 
@@ -414,11 +418,16 @@ class ExistService
 
             if ($status !== null) {
                 foreach ($status->success as $record) {
+                    if ($integration == "ynab") {
+                        $value = round($record['value'] * 1000, 0);
+                    } else {
+                        $value = $record['value'];
+                    }
                     $baseUserData = UserData::where('user_id', $user->id)
                         ->where('service', $integration)
                         ->where('attribute', $record['name'])
                         ->where('date_id', $record['date'])
-                        ->where('value', $record['value'])
+                        ->where('value', $value)
                         ->where('sent_to_exist', false);
 
                     if ($zero) {
@@ -428,18 +437,20 @@ class ExistService
                     $data = $baseUserData->orderBy('id', 'asc')
                         ->first();
 
-                    $responseDate = new Carbon("now", "UTC");
+                    if ($data !== null) {
+                        $responseDate = new Carbon("now", "UTC");
 
-                    $data->sent_to_exist = true;
-                    $data->response_date = $responseDate;
+                        $data->sent_to_exist = true;
+                        $data->response_date = $responseDate;
 
-                    if ($zero) {
-                        $data->response = "Updated to: " . $record['value'];
-                    } else {
-                        $data->response = "Incremented " . $record['value'] . " to " . $record['current'];
+                        if ($zero) {
+                            $data->response = "Updated to: " . $record['value'];
+                        } else {
+                            $data->response = "Incremented " . $record['value'] . " to " . $record['current'];
+                        }
+                        
+                        $data->save();
                     }
-                    
-                    $data->save();
                 }
             }
             

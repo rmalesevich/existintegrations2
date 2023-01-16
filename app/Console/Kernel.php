@@ -4,6 +4,7 @@ namespace App\Console;
 
 use App\Console\Commands\TraktProcessor;
 use App\Console\Commands\WhatPulseProcessor;
+use App\Console\Commands\YnabProcessor;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
@@ -19,6 +20,7 @@ class Kernel extends ConsoleKernel
     {
         $schedule->command(WhatPulseProcessor::class)->hourlyAt(15);
         $schedule->command(TraktProcessor::class)->hourlyAt(30);
+        $schedule->command(YnabProcessor::class)->hourlyAt(45);
     }
 
     /**
