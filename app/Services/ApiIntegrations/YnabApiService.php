@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Objects\ApiRequestDTO;
 use App\Objects\Ynab\YnabCategoryDTO;
 use App\Objects\Ynab\YnabOAuthTokenDTO;
+use App\Objects\Ynab\YnabTransactionDTO;
 use App\Objects\Ynab\YnabUserDTO;
 use App\Services\AbstractApiService;
 use Carbon\Carbon;
@@ -147,6 +148,45 @@ class YnabApiService extends AbstractApiService
         $userResponse = $this->request($apiRequest);
         if ($userResponse->success && $userResponse->responseBody !== null) {
             return new YnabCategoryDTO($userResponse->responseBody);
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * Retrieve the Transactions from the endpoint for the User
+     * Reference URL: https://api.youneedabudget.com/v1#/Transactions/getTransactions
+     * 
+     * Supports the 401 unauthorized / ServerLog function
+     * 
+     * @param User $user
+     * @param string $sinceDate
+     * @return YnabTransactionDTO
+     */
+    public function getTransactions(User $user, string $sinceDate): ?YnabTransactionDTO
+    {
+        $apiRequest = new ApiRequestDTO(
+            method: 'GET',
+            uri: config('services.ynab.baseUri') . '/budgets/last-used/transactions?since_date=' . $sinceDate,
+            params: [
+                'headers' => [
+                    'Content-Type' => 'application/json',
+                    'Authorization' => 'Bearer ' . $user->ynabUser->access_token
+                ]
+            ]
+        );
+
+        $transactionResponse = $this->request($apiRequest);
+        if ($transactionResponse->success && $transactionResponse->responseBody !== null) {
+            return new YnabTransactionDTO($transactionResponse->responseBody);
+        } else if (!$transactionResponse->success && $transactionResponse->statusCode == 401) {
+            ServiceLog::create([
+                'user_id' => $user->id,
+                'service' => 'ynab',
+                'unauthorized' => true
+            ]);
+
+            return null;
         } else {
             return null;
         }

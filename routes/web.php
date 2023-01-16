@@ -72,6 +72,7 @@ Route::delete('/services/ynab/disconnect', [YnabController::class, 'disconnect']
 Route::get('/services/ynab/manage', [YnabController::class, 'manage'])->name('ynab.manage');
 Route::post('/services/ynab/setAttributes', [YnabController::class, 'setAttributes'])->name('ynab.setAttributes');
 Route::post('/services/ynab/zero', [YnabController::class, 'zero'])->name('ynab.zero');
+Route::post('/services/ynab/refreshCategories', [YnabController::class, 'refreshCategories'])->name('ynab.refreshCategories');
 Route::get('/integrations/ynab', function() {
     return view('static.integrationsynab');
 })->name('integrations.ynab');

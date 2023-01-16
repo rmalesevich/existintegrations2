@@ -15,6 +15,7 @@ class UserData extends Model
         'user_id',
         'service',
         'service_id',
+        'service_id2',
         'attribute',
         'date_id',
         'value',

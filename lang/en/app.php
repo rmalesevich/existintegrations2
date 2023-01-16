@@ -9,6 +9,8 @@ return [
     'initiateConnect' => 'Connect to :service',
     'accountProfileAPIFail' => 'Failed to retrieve profile information for your account from :service',
     'categoryAPIFail' => 'Failed to retrieve :category for your account from :service',
+    'categoryAPISuccess' => 'Retrieved :category for your account from :service',
+    'refreshCategory' => 'Refresh :category from :service',
     'unknownError' => 'Unknown error occurred.',
     'serviceDisconnect' => 'Exist Integrations has been successfully disconnected from your :service account',
 
@@ -44,4 +46,7 @@ return [
     
     // TRAKT ERRORS
     'traktHistoryError' => 'Error loading the history for this user',
+
+    // YNAB ERRORS
+    'ynabHistoryError' => 'Error loading the transactions for this user',
 ];

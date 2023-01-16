@@ -23,10 +23,17 @@
                     </div>
 
                 @foreach ($logs as $log)
+                    @php
+                        if ($log->service == "ynab") {
+                            $value = round($log->value / 1000, 2);
+                        } else {
+                            $value = $log->value;
+                        }
+                    @endphp
                     <div class="mb-2">
                         <strong>{{ $log->updated_at }}</strong> -
                     @if ($log->date_id !== null)
-                        {{ $log->date_id }} - {{ $log->service }} - {{ $log->attribute }} - {{ $log->value }} - {{ $log->message }}
+                        {{ $log->date_id }} - {{ $log->service }} - {{ $log->attribute }} - {{ $value }} - {{ $log->message }}
                     @else
                         {{ $log->service }} - {{ $log->message }}
                     @endif
