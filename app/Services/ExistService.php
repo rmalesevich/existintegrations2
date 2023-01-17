@@ -201,7 +201,8 @@ class ExistService
                         array_push($createAttributeBody, [
                             'label' => $attributeDetail['label'], // Create Attribute needs to use the label key
                             'group' => $attributeDetail['group'],
-                            'value_type' => $attributeDetail['value_type']
+                            'value_type' => $attributeDetail['value_type'],
+                            'manual' => false
                         ]);
                     }
 
