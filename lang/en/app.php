@@ -49,4 +49,8 @@ return [
 
     // YNAB ERRORS
     'ynabHistoryError' => 'Error loading the transactions for this user',
+
+    // ADD TEXT
+    'addRequestedInformation1' => ':service :information:',
+    'addRequestedInformation1Placeholder' => ':information',
 ];

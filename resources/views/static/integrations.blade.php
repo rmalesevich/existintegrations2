@@ -18,6 +18,7 @@
                         <li><a href="{{ route('integrations.whatpulse') }}" class="text-blue-500 hover:text-blue-700 transition duration-300 ease-in-out mb-4">WhatPulse</a></li>
                         <li><a href="{{ route('integrations.trakt') }}" class="text-blue-500 hover:text-blue-700 transition duration-300 ease-in-out mb-4">Trakt</a></li>
                         <li><a href="{{ route('integrations.ynab') }}" class="text-blue-500 hover:text-blue-700 transition duration-300 ease-in-out mb-4">YNAB - You Need a Budget</a></li>
+                        <li><a href="{{ route('integrations.toggl') }}" class="text-blue-500 hover:text-blue-700 transition duration-300 ease-in-out mb-4">Toggl Track</a></li>
                     </ul>
 
                 </div>
