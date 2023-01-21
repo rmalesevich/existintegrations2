@@ -12,6 +12,9 @@ use App\Services\AbstractApiService;
 
 class ExistApiService extends AbstractApiService
 {
+    private $clientId;
+    private $clientSecret;
+    
     public function __construct()
     {
         $this->clientId = env('EXIST_CLIENT_ID');

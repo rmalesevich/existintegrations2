@@ -120,6 +120,8 @@ class YnabService
 
     /**
      * Token the Token for the user to ensure it's still valid. If required, refresh the token from YNAB.
+     * Tokens usually last two hours and with the timing of the processor, it's possible that the token will expire
+     * after this call. Subtract 10 minutes from the check time to capture that eventuality.
      * 
      * @param User $user
      * @return StandardDTO
@@ -127,8 +129,9 @@ class YnabService
     public function checkToken(User $user): StandardDTO
     {
         $todaysDate = date('Y-m-d H:i:s');
+        $checkDate = date('Y-m-d H:i:s', strtotime("-10 minutes", strtotime($user->ynabUser->token_expires)));
 
-        if ($todaysDate >= $user->ynabUser->token_expires) {
+        if ($todaysDate >= $checkDate) {
             $refreshTokenResponse = $this->api->refreshToken($user->ynabUser->refresh_token);
             if ($refreshTokenResponse === null) {
                 return new StandardDTO(

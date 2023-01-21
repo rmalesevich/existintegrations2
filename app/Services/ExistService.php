@@ -94,6 +94,8 @@ class ExistService
 
     /**
      * Token the Token for the user to ensure it's still valid. If required, refresh the token from Exist.
+     * Exist tokens last for 365 days, but just in case there is a weird case of timing this will refresh
+     * the token 7 days before it expires.
      * 
      * @param User $user
      * @return StandardDTO
@@ -101,8 +103,9 @@ class ExistService
     public function checkToken(User $user): StandardDTO
     {
         $todaysDate = date('Y-m-d H:i:s');
+        $checkDate = date('Y-m-d H:i:s', strtotime("-7 days", strtotime($user->existUser->token_expires)));
 
-        if ($todaysDate >= $user->existUser->token_expires) {
+        if ($todaysDate >= $checkDate) {
             $refreshTokenResponse = $this->api->refreshToken($user->existUser->refresh_token);
             if ($refreshTokenResponse === null) {
                 return new StandardDTO(
@@ -201,7 +204,8 @@ class ExistService
                         array_push($createAttributeBody, [
                             'label' => $attributeDetail['label'], // Create Attribute needs to use the label key
                             'group' => $attributeDetail['group'],
-                            'value_type' => $attributeDetail['value_type']
+                            'value_type' => $attributeDetail['value_type'],
+                            'manual' => false
                         ]);
                     }
 
