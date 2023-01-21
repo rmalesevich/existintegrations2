@@ -91,13 +91,15 @@ return [
                 'template' => 'tv_min',
                 'label' => 'Watching TV',
                 'group' => 'media',
-                'value_type' => 3
+                'value_type' => 3,
+                'multiple' => true
             ], [
                 'attribute' => 'watching_movies',
                 'template' => null,
                 'label' => 'Watching Movies',
                 'group' => 'media',
-                'value_type' => 3
+                'value_type' => 3,
+                'multiple' => true
             ]
         ]
     ],
@@ -131,6 +133,55 @@ return [
         ]
     ],
 
+    // Configuration related to the integration with Toggl Track
+    'toggl' => [
+        'key' => 'toggl',
+        'baseUri' => 'https://api.track.toggl.com/api/v8',
+        'reportsBaseUri' => 'https://api.track.toggl.com/reports/api/v2',
+        'userAgent' => 'existintegrations',
+        'attributes' => [
+            [
+                'attribute' => 'gaming_min',
+                'template' => 'gaming_min',
+                'label' => 'Watching TV',
+                'group' => 'media',
+                'value_type' => 3
+            ], [
+                'attribute' => 'productive_min',
+                'template' => 'productive_min',
+                'label' => 'Productive time',
+                'group' => 'productivity',
+                'value_type' => 3
+            ], [
+                'attribute' => 'neutral_min',
+                'template' => 'neutral_min',
+                'label' => 'Neutral time',
+                'group' => 'productivity',
+                'value_type' => 3
+            ], [
+                'attribute' => 'distracting_min',
+                'template' => 'distracting_min',
+                'label' => 'Distracting time',
+                'group' => 'productivity',
+                'value_type' => 3
+            ], [
+                'attribute' => 'tv_min',
+                'template' => 'tv_min',
+                'label' => 'Watching TV',
+                'group' => 'media',
+                'value_type' => 3,
+                'multiple' => true
+            ], [
+                'attribute' => 'watching_movies',
+                'template' => null,
+                'label' => 'Watching Movies',
+                'group' => 'media',
+                'value_type' => 3,
+                'multiple' => true
+            ], 
+        ]
+    ],
+
     // Array with all of the officially supported integrations
     'integrations' => [
         [
@@ -153,6 +204,13 @@ return [
             'outputName' => 'YNAB',
             'logo' => '/images/ynab.svg',
             'description' => 'You Need a Budget (YNAB) categorizes your money input/output into monthly budgets. Your transaction totals can be pulled into financial attributes on Exist through Exist Integrations.',
+            'enabled' => true
+        ], [
+            'service' => 'toggl',
+            'userMethod' => 'togglUser',
+            'outputName' => 'Toggl Track',
+            'logo' => '/images/toggl.png',
+            'description' => 'Toggl Track is a simple and powerful time tracking tool so you can understand how you spend your time. Time entries within projects can be pulled into various attributes on Exist through Exist Integrations.',
             'enabled' => true
         ]
     ]
