@@ -98,10 +98,27 @@ class TraktController extends Controller
     {
         if (auth()->user()->traktUser === null) return redirect()->route('home');
 
+        $attributes = array();
+        $allAttributes = collect(config('services.trakt.attributes'));
+        foreach ($allAttributes as $attribute) {
+            if ($attribute['multiple']) {
+                // check if this is already configured in a different integration
+                $check = UserAttribute::where('user_id', auth()->user()->id)
+                    ->where('attribute', $attribute['attribute'])
+                    ->whereNot('integration', 'trakt')
+                    ->count();
+                if ($check == 0) {
+                    array_push($attributes, $attribute);
+                }
+            } else {
+                array_push($attributes, $attribute);
+            }
+        }
+
         return view('manage.trakt', [
             'user' => auth()->user(),
             'userAttributes' => auth()->user()->attributes->where('integration', 'trakt')->where('user_id', auth()->user()->id),
-            'attributes' => collect(config('services.trakt.attributes'))
+            'attributes' => collect($attributes)
         ]);
     }
 

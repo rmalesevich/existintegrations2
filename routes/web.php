@@ -84,7 +84,7 @@ Route::delete('/services/toggl/disconnect', [TogglController::class, 'disconnect
 Route::get('/services/toggl/manage', [TogglController::class, 'manage'])->name('toggl.manage');
 Route::post('/services/whatpulse/setAttributes', [TogglController::class, 'setAttributes'])->name('toggl.setAttributes');
 Route::post('/services/toggl/zero', [TogglController::class, 'zero'])->name('toggl.zero');
-Route::post('/services/toggl/refreshProjects', [TogglController::class, 'refreshCategories'])->name('toggl.refreshProjects');
+Route::post('/services/toggl/refreshProjects', [TogglController::class, 'refreshProjects'])->name('toggl.refreshProjects');
 Route::get('/integrations/toggl', function() {
     return view('static.integrationstoggl');
 })->name('integrations.toggl');

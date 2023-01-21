@@ -56,25 +56,29 @@ return [
                 'template' => 'keystrokes',
                 'label' => 'Keystrokes',
                 'group' => 'productivity',
-                'value_type' => 3
+                'value_type' => 3,
+                'multiple' => false
             ], [
                 'attribute' => 'mouse_clicks',
                 'template' => null,
                 'label' => 'Mouse Clicks',
                 'group' => 'productivity',
-                'value_type' => 0
+                'value_type' => 0,
+                'multiple' => false
             ], [
                 'attribute' => 'download_mb',
                 'template' => null,
                 'label' => 'Download MB',
                 'group' => 'productivity',
-                'value_type' => 0
+                'value_type' => 0,
+                'multiple' => false
             ], [
                 'attribute' => 'upload_mb',
                 'template' => null,
                 'label' => 'Upload MB',
                 'group' => 'productivity',
-                'value_type' => 0
+                'value_type' => 0,
+                'multiple' => false
             ]
         ]
     ],
@@ -116,19 +120,22 @@ return [
                 'template' => 'money_spent',
                 'label' => 'Money spent',
                 'group' => 'finance',
-                'value_type' => 1
+                'value_type' => 1,
+                'multiple' => false
             ], [
                 'attribute' => 'money_earned',
                 'template' => null,
                 'label' => 'Money earned',
                 'group' => 'finance',
-                'value_type' => 1
+                'value_type' => 1,
+                'multiple' => false
             ], [
                 'attribute' => 'money_saved',
                 'template' => null,
                 'label' => 'Money saved',
                 'group' => 'finance',
-                'value_type' => 1
+                'value_type' => 1,
+                'multiple' => false
             ]
         ]
     ],
@@ -143,27 +150,31 @@ return [
             [
                 'attribute' => 'gaming_min',
                 'template' => 'gaming_min',
-                'label' => 'Watching TV',
+                'label' => 'Time gaming',
                 'group' => 'media',
-                'value_type' => 3
+                'value_type' => 3,
+                'multiple' => false
             ], [
                 'attribute' => 'productive_min',
                 'template' => 'productive_min',
                 'label' => 'Productive time',
                 'group' => 'productivity',
-                'value_type' => 3
+                'value_type' => 3,
+                'multiple' => false
             ], [
                 'attribute' => 'neutral_min',
                 'template' => 'neutral_min',
                 'label' => 'Neutral time',
                 'group' => 'productivity',
-                'value_type' => 3
+                'value_type' => 3,
+                'multiple' => false
             ], [
                 'attribute' => 'distracting_min',
                 'template' => 'distracting_min',
                 'label' => 'Distracting time',
                 'group' => 'productivity',
-                'value_type' => 3
+                'value_type' => 3,
+                'multiple' => false
             ], [
                 'attribute' => 'tv_min',
                 'template' => 'tv_min',

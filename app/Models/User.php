@@ -55,6 +55,9 @@ class User extends Authenticatable
             case "ynab":
                 return ($this->ynabUser !== null);
                 break;
+            case "toggl":
+                return ($this->togglUser !== null);
+                break;
             default:
                 return false;
                 break;
@@ -89,6 +92,16 @@ class User extends Authenticatable
     public function ynabUser()
     {
         return $this->hasOne(YnabUser::class);
+    }
+
+    /**
+     * Retrieve the Toggl object associated with this User
+     * 
+     * @return TogglUser
+     */
+    public function togglUser()
+    {
+        return $this->hasOne(TogglUser::class);
     }
 
     /**

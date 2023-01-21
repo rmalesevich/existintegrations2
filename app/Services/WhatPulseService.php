@@ -30,12 +30,12 @@ class WhatPulseService
      * @param string $accountName
      * @return StandardDTO
      */
-    public function connect(User $user, $accountName): StandardDTO
+    public function connect(User $user, string $accountName): StandardDTO
     {
         if (WhatPulseUser::where('account_name', $accountName)->exists()) {
             return new StandardDTO(
                 success: false,
-                message: "WhatPulse account is already connected to Exist Integrations"
+                message: __('app.alreadyIntegrated', [ 'service' => 'WhatPulse'] )
             );
         }
 

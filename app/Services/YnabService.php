@@ -185,8 +185,10 @@ class YnabService
             foreach ($categoryGroup['categories'] as $category) {
                 YnabCategory::updateOrCreate([
                     'user_id' => $user->id,
-                    'category_group_name' => $categoryGroupName,
                     'category_id' => $category['id'],
+                    
+                ], [
+                    'category_group_name' => $categoryGroupName,
                     'category_name' => $category['name'],
                     'deleted_flag' => $category['deleted']
                 ]);

@@ -13,6 +13,7 @@ return [
     'refreshCategory' => 'Refresh :category from :service',
     'unknownError' => 'Unknown error occurred.',
     'serviceDisconnect' => 'Exist Integrations has been successfully disconnected from your :service account',
+    'alreadyIntegrated' => 'You are already connected to :service',
 
     // OAUTH TEXT
     'oAuthFlowCanceled' => ':service authorization flow was canceled.',
@@ -50,7 +51,9 @@ return [
     // YNAB ERRORS
     'ynabHistoryError' => 'Error loading the transactions for this user',
 
-    // ADD TEXT
+    // SERVICES THAT NEED REQUIRED INFORMATION
     'addRequestedInformation1' => ':service :information:',
     'addRequestedInformation1Placeholder' => ':information',
+    'addRequestedInformation1Required' => ':information is required',
+
 ];
