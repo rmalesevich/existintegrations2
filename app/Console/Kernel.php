@@ -18,9 +18,9 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        $schedule->command(WhatPulseProcessor::class)->hourlyAt(15);
-        $schedule->command(TraktProcessor::class)->hourlyAt(30);
-        $schedule->command(YnabProcessor::class)->hourlyAt(45);
+        $schedule->command(WhatPulseProcessor::class)->hourlyAt(env('WHATPULSE_HOUR'));
+        $schedule->command(TraktProcessor::class)->hourlyAt(env('TRAKT_HOUR'));
+        $schedule->command(YnabProcessor::class)->hourlyAt(env('YNAB_HOUR'));
     }
 
     /**

@@ -62,7 +62,7 @@
                     </h3>
 
                     <p class="mb-4">
-                        The YNAB Processor runs every hour at 45 minutes past the hour. It will execute the following sequence:
+                        The YNAB Processor runs every hour at {{ env('YNAB_HOUR') }} minutes past the hour. It will execute the following sequence:
                     </p>
 
                     <ul class="mb-4 list-disc list-inside">

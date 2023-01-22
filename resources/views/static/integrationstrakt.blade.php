@@ -64,7 +64,7 @@
                     </h3>
 
                     <p class="mb-4">
-                        The Trakt Processor runs every hour at 30 minutes past the hour. It will execute the following sequence:
+                        The Trakt Processor runs every hour at {{ env('TRAKT_HOUR') }} minutes past the hour. It will execute the following sequence:
                     </p>
 
                     <ul class="mb-4 list-disc list-inside">
