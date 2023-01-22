@@ -120,7 +120,7 @@ class YnabController extends Controller
         if (auth()->user()->existUser === null || auth()->user()->ynabUser === null) return redirect()->route('home');
 
         $attributes = array();
-        $keys = array_keys($request->project);
+        $keys = array_keys($request->category);
 
         foreach ($keys as $categoryId) {
             $attribute = $request->category[$categoryId];
