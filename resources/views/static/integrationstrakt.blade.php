@@ -35,9 +35,13 @@
                     </h3>
 
                     <ul class="mb-4 list-disc list-inside">
-                        <li>Watching TV - the total time watching television shows will be sent to the official watching TV attribute</li>
-                        <li>Watching Movies - the total time watching movies will be sent to a custom attribute in Exist</li>
+                        <li>Watching TV * - the total time watching television shows will be sent to the official watching TV attribute</li>
+                        <li>Watching Movies * - the total time watching movies will be sent to a custom attribute in Exist</li>
                     </ul>
+
+                    <p class="mb-4">
+                        * These attributes are also supported with Toggl Track. If you have configured them with Toggl Track, you will not be able to configure them with Trakt.
+                    </p>
 
                     <p class="mb-4">
                         Select the attributes you wish to send to Exist and press the {{ __('app.attributeButton', ['service' => 'Trakt']) }} button.
@@ -64,7 +68,7 @@
                     </h3>
 
                     <p class="mb-4">
-                        The Trakt Processor runs every hour at 30 minutes past the hour. It will execute the following sequence:
+                        The Trakt Processor runs every hour at {{ env('TRAKT_HOUR') }} minutes past the hour. It will execute the following sequence:
                     </p>
 
                     <ul class="mb-4 list-disc list-inside">

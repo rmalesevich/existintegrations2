@@ -56,25 +56,29 @@ return [
                 'template' => 'keystrokes',
                 'label' => 'Keystrokes',
                 'group' => 'productivity',
-                'value_type' => 3
+                'value_type' => 3,
+                'multiple' => false
             ], [
                 'attribute' => 'mouse_clicks',
                 'template' => null,
                 'label' => 'Mouse Clicks',
                 'group' => 'productivity',
-                'value_type' => 0
+                'value_type' => 0,
+                'multiple' => false
             ], [
                 'attribute' => 'download_mb',
                 'template' => null,
                 'label' => 'Download MB',
                 'group' => 'productivity',
-                'value_type' => 0
+                'value_type' => 0,
+                'multiple' => false
             ], [
                 'attribute' => 'upload_mb',
                 'template' => null,
                 'label' => 'Upload MB',
                 'group' => 'productivity',
-                'value_type' => 0
+                'value_type' => 0,
+                'multiple' => false
             ]
         ]
     ],
@@ -91,13 +95,15 @@ return [
                 'template' => 'tv_min',
                 'label' => 'Watching TV',
                 'group' => 'media',
-                'value_type' => 3
+                'value_type' => 3,
+                'multiple' => true
             ], [
                 'attribute' => 'watching_movies',
                 'template' => null,
                 'label' => 'Watching Movies',
                 'group' => 'media',
-                'value_type' => 3
+                'value_type' => 3,
+                'multiple' => true
             ]
         ]
     ],
@@ -114,20 +120,76 @@ return [
                 'template' => 'money_spent',
                 'label' => 'Money spent',
                 'group' => 'finance',
-                'value_type' => 1
+                'value_type' => 1,
+                'multiple' => false
             ], [
                 'attribute' => 'money_earned',
                 'template' => null,
                 'label' => 'Money earned',
                 'group' => 'finance',
-                'value_type' => 1
+                'value_type' => 1,
+                'multiple' => false
             ], [
                 'attribute' => 'money_saved',
                 'template' => null,
                 'label' => 'Money saved',
                 'group' => 'finance',
-                'value_type' => 1
+                'value_type' => 1,
+                'multiple' => false
             ]
+        ]
+    ],
+
+    // Configuration related to the integration with Toggl Track
+    'toggl' => [
+        'key' => 'toggl',
+        'baseUri' => 'https://api.track.toggl.com/api/v8',
+        'reportsBaseUri' => 'https://api.track.toggl.com/reports/api/v2',
+        'userAgent' => 'existintegrations',
+        'attributes' => [
+            [
+                'attribute' => 'gaming_min',
+                'template' => 'gaming_min',
+                'label' => 'Time gaming',
+                'group' => 'media',
+                'value_type' => 3,
+                'multiple' => false
+            ], [
+                'attribute' => 'productive_min',
+                'template' => 'productive_min',
+                'label' => 'Productive time',
+                'group' => 'productivity',
+                'value_type' => 3,
+                'multiple' => false
+            ], [
+                'attribute' => 'neutral_min',
+                'template' => 'neutral_min',
+                'label' => 'Neutral time',
+                'group' => 'productivity',
+                'value_type' => 3,
+                'multiple' => false
+            ], [
+                'attribute' => 'distracting_min',
+                'template' => 'distracting_min',
+                'label' => 'Distracting time',
+                'group' => 'productivity',
+                'value_type' => 3,
+                'multiple' => false
+            ], [
+                'attribute' => 'tv_min',
+                'template' => 'tv_min',
+                'label' => 'Watching TV',
+                'group' => 'media',
+                'value_type' => 3,
+                'multiple' => true
+            ], [
+                'attribute' => 'watching_movies',
+                'template' => null,
+                'label' => 'Watching Movies',
+                'group' => 'media',
+                'value_type' => 3,
+                'multiple' => true
+            ], 
         ]
     ],
 
@@ -153,6 +215,13 @@ return [
             'outputName' => 'YNAB',
             'logo' => '/images/ynab.svg',
             'description' => 'You Need a Budget (YNAB) categorizes your money input/output into monthly budgets. Your transaction totals can be pulled into financial attributes on Exist through Exist Integrations.',
+            'enabled' => true
+        ], [
+            'service' => 'toggl',
+            'userMethod' => 'togglUser',
+            'outputName' => 'Toggl Track',
+            'logo' => '/images/toggl.png',
+            'description' => 'Toggl Track is a simple and powerful time tracking tool so you can understand how you spend your time. Time entries within projects can be pulled into various attributes on Exist through Exist Integrations.',
             'enabled' => true
         ]
     ]

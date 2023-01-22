@@ -385,7 +385,7 @@ class ExistService
     {
         $baseUserData = UserData::where('user_id', $user->id)
             ->where('service', $integration)
-            ->where('sent_to_exist', false);
+            ->where('sent_to_exist', 0);
 
         if ($zero) {
             $userData = $baseUserData->where('service_id', 'zero')

@@ -44,7 +44,6 @@
                         Configure the attributes you wish to send to Exist and press the {{ __('app.attributeButton', ['service' => 'YNAB']) }} button.
                     </p>
 
-
                     <h3 class="font-semibold text-xl text-gray-800 leading-tight mb-4">
                         {{ __('app.zeroOutHeader') }}
                     </h3>
@@ -54,7 +53,7 @@
                     </p>
 
                     <p class="mb-4">
-                        This can happen if a pulse is deleted or if you manually adjust the totals of the custom attributes from the Exist web or mobile apps.
+                        This can happen if a transaction is deleted or if you manually adjust the totals of the custom attributes from the Exist web or mobile apps.
                     </p>
 
                     <h3 class="font-semibold text-xl text-gray-800 leading-tight mb-4">
@@ -62,17 +61,17 @@
                     </h3>
 
                     <p class="mb-4">
-                        The YNAB Processor runs every hour at 45 minutes past the hour. It will execute the following sequence:
+                        The YNAB Processor runs every hour at {{ env('YNAB_HOUR') }} minutes past the hour. It will execute the following sequence:
                     </p>
 
                     <ul class="mb-4 list-disc list-inside">
-                        <li>Download all transactions from YNAB for the last 14 days</li>
+                        <li>Download all transactions from YNAB for the last {{ env('BASE_DAYS') }} days</li>
                         <li>Check if the Category for the transaction is configured and identify the attribute</li>
                         <li>If no records are in the user_data, save the value for the attribute</li>
                         <li>If a record does exist, check if the date has changed. If the date has changed, send a negative value for the previous day and a positive value for the new day</li>
-                        <li>If a record does exist, and the value has changed, save a value that is the difference between what Exist Integrations has sent and what the value is from YNAB.</li>
+                        <li>If a record does exist, and the value has changed, save a value that is the difference between what Exist Integrations has sent and what the value is from YNAB</li>
                         <li>Increment any of the new data in Exist</li>
-                        <li>Purge any data linked to your Trakt user over than {{ env('LOG_DAYS_KEPT') }} days.</li>
+                        <li>Purge any data linked to your YNAB user over than {{ env('LOG_DAYS_KEPT') }} days.</li>
                     </ul>
 
                     <p class="mb-4">

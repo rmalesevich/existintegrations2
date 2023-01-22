@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\IntegrationController;
 use App\Http\Controllers\Integrations\ExistController;
+use App\Http\Controllers\Integrations\TogglController;
 use App\Http\Controllers\Integrations\TraktController;
 use App\Http\Controllers\Integrations\WhatPulseController;
 use App\Http\Controllers\Integrations\YnabController;
@@ -76,6 +77,17 @@ Route::post('/services/ynab/refreshCategories', [YnabController::class, 'refresh
 Route::get('/integrations/ynab', function() {
     return view('static.integrationsynab');
 })->name('integrations.ynab');
+
+// Toggl Track Routes
+Route::post('/services/toggl/connect', [TogglController::class, 'connect'])->name('toggl.connect');
+Route::delete('/services/toggl/disconnect', [TogglController::class, 'disconnect'])->name('toggl.disconnect');
+Route::get('/services/toggl/manage', [TogglController::class, 'manage'])->name('toggl.manage');
+Route::post('/services/toggl/setAttributes', [TogglController::class, 'setAttributes'])->name('toggl.setAttributes');
+Route::post('/services/toggl/zero', [TogglController::class, 'zero'])->name('toggl.zero');
+Route::post('/services/toggl/refreshProjects', [TogglController::class, 'refreshProjects'])->name('toggl.refreshProjects');
+Route::get('/integrations/toggl', function() {
+    return view('static.integrationstoggl');
+})->name('integrations.toggl');
 
 // Generic Static Routes
 Route::get('/privacy', function() {

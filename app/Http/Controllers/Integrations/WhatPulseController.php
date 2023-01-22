@@ -12,6 +12,7 @@ use Illuminate\Http\Request;
 class WhatPulseController extends Controller
 {
     private $whatpulse;
+    private $exist;
 
     public function __construct(WhatPulseService $whatpulse, ExistService $exist)
     {
@@ -30,13 +31,13 @@ class WhatPulseController extends Controller
 
         if (auth()->user()->whatpulseUser != null) {
             return redirect()->route('home')
-                ->with('errorMessage', 'A WhatPulse account is already connected to your user');
+                ->with('errorMessage', __('app.alreadyIntegrated', [ 'service' => 'WhatPulse' ]));
         }
 
         $this->validate($request, [
             'whatpulseAccountName' => 'required'
         ], [
-            'whatpulseAccountName.required' => 'WhatPulse Account Name is required'
+            'whatpulseAccountName.required' => __('app.addRequestedInformation1Required', [ 'information' => 'WhatPulse Account Name' ])
         ]);
 
         $whatpulseAccountName = $request->whatpulseAccountName;
