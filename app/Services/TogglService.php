@@ -11,6 +11,7 @@ use App\Models\UserData;
 use App\Objects\StandardDTO;
 use App\Services\ApiIntegrations\TogglApiService;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class TogglService
@@ -177,6 +178,160 @@ class TogglService
         return new StandardDTO(
             success: true
         );
+    }
+
+    /**
+     * Process the Time Entries for the User into the user_data table
+     * 
+     * @param User $user
+     * @return StandardDTO
+     */
+    public function processTimeEntries(User $user): StandardDTO
+    {
+        // set up the Project IDs for this user
+        $projects = TogglProject::where([
+            ['user_id', '=', $user->id],
+            ['attribute', '!=', null]
+        ])->get();
+
+        $projectIds = "";
+        foreach ($projects as $project) {
+            $projectIds .= "," . $project->project_id;
+        }
+        $projectIds = substr($projectIds, 1);
+        
+        $days = config('services.baseDays') * -1;
+        $startAt = new Carbon();
+        $startAt->addDays($days);
+
+        $page = 1;
+
+        $timeResponse = $this->api->getTimeEntries($user, $projectIds, $startAt->format('Y-m-d'), $page);
+        if ($timeResponse === null) {
+            $unauthorizedCount = ServiceLog::where('user_id', $user->id)
+                ->where('service', 'toggl')
+                ->where('unauthorized', true)
+                ->whereNull('message')
+                ->count();
+
+            if ($unauthorizedCount > 0) {
+                ServiceLog::where('user_id', $user->id)
+                    ->where('service', 'toggl')
+                    ->where('unauthorized', true)
+                    ->whereNull('message')
+                    ->update(['message' => 'Authorization revoked']);
+
+                $this->disconnect($user, "Authorization revoked", true);
+            }
+            
+            return new StandardDTO(
+                success: false,
+                message: __('app.togglTimeEntriesError')
+            );
+        }
+
+        // to support the pagination, wrap in a do/while loop
+        do {
+
+            foreach ($timeResponse->data as $time) {
+                $project = TogglProject::where('user_id', $user->id)
+                    ->where('project_id', $time['pid'])
+                    ->where('active_flag', true)
+                    ->where('deleted_flag', false)
+                    ->whereNotNull('attribute')
+                    ->first();
+
+                if ($project !== null) {
+                    $endDT = new Carbon($time['end'], "UTC");
+                    $endDT->setTimezone($user->existUser->timezone);
+
+                    $service_id = $time['id'];
+                    $date_id = $endDT->format('Y-m-d');
+                    $attribute = $project->attribute;
+                    $value = round($time['dur'] / 1000 / 60);
+                    $this->processTimeEntry($user, $service_id, $attribute, $date_id, $value);
+                }
+            }
+            
+            if ($timeResponse->total_count > ($timeResponse->per_page * $page)) {
+                $page++;
+                $timeResponse = $this->api->getTimeEntries($user, $projectIds, $startAt->format('Y-m-d'), $page);
+            } else {
+                break;
+            }
+
+        } while (true);
+        
+        return new StandardDTO(
+            success: true
+        );
+    }
+
+    /**
+     * Process the time entry by figuring out if it's already sent or has changed the totals
+     * 
+     * @param User $user
+     * @param string $service_id
+     * @param string $attribute
+     * @param string $date_id
+     * @param float $value
+     * @return StandardDTO
+     */
+    private function processTimeEntry(User $user, string $service_id, string $attribute, string $date_id, float $value): StandardDTO
+    {
+
+        $dataCheck = DB::table('user_data')
+            ->selectRaw('date_id, MAX(service_id2) AS id2, SUM(value) AS totalValue')
+            ->where('user_id', $user->id)
+            ->where('service', 'toggl')
+            ->where('service_id', $service_id)
+            ->groupBy('date_id')
+            ->get();
+
+        if ($dataCheck->count() == 0) {
+            // Scenario 1 - new record
+            $this->createUserData($user->id, $service_id, 1, $attribute, $date_id, $value);
+        } else {
+            // Scenario 2 - the Date Changed
+            if (!$dataCheck->contains('date_id', '=', $date_id)) {
+                foreach ($dataCheck as $record) {
+                    $this->createUserData($user->id, $service_id, $record->id2 + 1, $attribute, $record->date_id, $record->totalValue * (-1));
+                }
+                $this->createUserData($user->id, $service_id, 1, $attribute, $date_id, $value);
+            } else {
+                $record = $dataCheck->where('date_id', '=', $date_id)->first();
+                if ($record->totalValue != $value) {
+                    $this->createUserData($user->id, $service_id, $record->id2 + 1, $attribute, $date_id, $value - $record->totalValue);
+                }
+            }
+        }
+        
+        return new StandardDTO(
+            success: true
+        );
+    }
+
+    /**
+     * Create a new record in the user_data table for YNAB
+     * 
+     * @param string $user_id
+     * @param string $service_id
+     * @param string $service_id2
+     * @param string $attribute
+     * @param string $date_id
+     * @param int $value
+     */
+    private function createUserData(string $user_id, string $service_id, int $service_id2, string $attribute, string $date_id, int $value)
+    {
+        UserData::create([
+            'user_id' => $user_id,
+            'service' => 'toggl',
+            'service_id' => $service_id,
+            'service_id2' => $service_id2,
+            'attribute' => $attribute,
+            'date_id' => $date_id,
+            'value' => $value
+        ]);
     }
 
 }

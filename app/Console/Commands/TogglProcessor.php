@@ -5,26 +5,26 @@ namespace App\Console\Commands;
 use App\Models\User;
 use App\Models\UserData;
 use App\Services\ExistService;
-use App\Services\YnabService;
+use App\Services\TogglService;
 use Illuminate\Console\Command;
 use Illuminate\Log\Logger;
 use Illuminate\Support\Str;
 
-class YnabProcessor extends Command
+class TogglProcessor extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'ynab:process';
+    protected $signature = 'toggl:process';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Process the YNAB Users';
+    protected $description = 'Process the Toggl Track Users';
 
     /**
      * Create a new command instance.
@@ -41,26 +41,26 @@ class YnabProcessor extends Command
      *
      * @return int
      */
-    public function handle(Logger $logger, YnabService $ynab, ExistService $exist)
+    public function handle(Logger $logger, TogglService $toggl, ExistService $exist)
     {
         $correlationId = (string) Str::uuid();
-        $logger->info($correlationId . " beginning YnabProcessor");
+        $logger->info($correlationId . " beginning TogglProcessor");
 
         $users = User::has('existUser')
-            ->has('ynabUser')
+            ->has('togglUser')
             ->get();
 
         foreach ($users as $user) {
-            $response = $ynab->processTransactions($user);
+            $response = $toggl->processTimeEntries($user);
             if (!$response->success) {
                 continue;
             }
 
             // process any zero out requests to Exist
-            $exist->sendUserData($user, "ynab", true);
+            $exist->sendUserData($user, "toggl", true);
 
             // send the data to Exist
-            $exist->sendUserData($user, "ynab", false);
+            $exist->sendUserData($user, "toggl", false);
 
             // delete user data older than the base days
             $days = config('services.logDaysKept');
@@ -72,6 +72,6 @@ class YnabProcessor extends Command
                 ->delete();
         }
 
-        $logger->info($correlationId . " finished YnabProcessor");
+        $logger->info($correlationId . " finished TogglProcessor");
     }
 }

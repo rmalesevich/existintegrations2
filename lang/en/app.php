@@ -51,6 +51,9 @@ return [
     // YNAB ERRORS
     'ynabHistoryError' => 'Error loading the transactions for this user',
 
+    // TOGGL ERRORS
+    'togglTimeEntriesError' => 'Error loading the time entries for this user',
+
     // SERVICES THAT NEED REQUIRED INFORMATION
     'addRequestedInformation1' => ':service :information:',
     'addRequestedInformation1Placeholder' => ':information',

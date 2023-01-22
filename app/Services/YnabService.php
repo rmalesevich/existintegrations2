@@ -341,7 +341,6 @@ class YnabService
                 }
             }
         } else {
-            dd($service_id);
             $record = DB::table('user_data')
                 ->selectRaw('date_id, MAX(service_id2) AS id2, SUM(value) AS totalValue')
                 ->where('user_id', $user->id)
