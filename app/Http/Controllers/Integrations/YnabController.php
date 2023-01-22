@@ -120,11 +120,17 @@ class YnabController extends Controller
         if (auth()->user()->existUser === null || auth()->user()->ynabUser === null) return redirect()->route('home');
 
         $attributes = array();
-        foreach (collect(config('services.ynab.attributes')) as $attribute) {
-            if (!isset($attributes[$attribute['attribute']])) {
-                array_push($attributes, [
-                    'attribute' => $attribute['attribute']
-                ]);
+        $keys = array_keys($request->project);
+
+        foreach ($keys as $categoryId) {
+            $attribute = $request->category[$categoryId];
+
+            if ($attribute != __('app.dropdownIgnore') ) {
+                if (collect($attributes)->where('attribute', $attribute)->count() == 0) {
+                    array_push($attributes, [
+                        'attribute' => $attribute
+                    ]);
+                }
             }
         }
 
@@ -139,7 +145,6 @@ class YnabController extends Controller
                     ]);
             }
 
-            $keys = array_keys($request->category);
             foreach ($keys as $categoryId) {
                 $attribute = $request->category[$categoryId];
 

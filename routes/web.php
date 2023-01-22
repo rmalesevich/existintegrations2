@@ -82,7 +82,7 @@ Route::get('/integrations/ynab', function() {
 Route::post('/services/toggl/connect', [TogglController::class, 'connect'])->name('toggl.connect');
 Route::delete('/services/toggl/disconnect', [TogglController::class, 'disconnect'])->name('toggl.disconnect');
 Route::get('/services/toggl/manage', [TogglController::class, 'manage'])->name('toggl.manage');
-Route::post('/services/whatpulse/setAttributes', [TogglController::class, 'setAttributes'])->name('toggl.setAttributes');
+Route::post('/services/toggl/setAttributes', [TogglController::class, 'setAttributes'])->name('toggl.setAttributes');
 Route::post('/services/toggl/zero', [TogglController::class, 'zero'])->name('toggl.zero');
 Route::post('/services/toggl/refreshProjects', [TogglController::class, 'refreshProjects'])->name('toggl.refreshProjects');
 Route::get('/integrations/toggl', function() {

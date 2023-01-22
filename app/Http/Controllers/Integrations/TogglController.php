@@ -120,11 +120,17 @@ class TogglController extends Controller
         if (auth()->user()->existUser === null || auth()->user()->togglUser === null) return redirect()->route('home');
 
         $attributes = array();
-        foreach (collect(config('services.toggl.attributes')) as $attribute) {
-            if (!isset($attributes[$attribute['attribute']])) {
-                array_push($attributes, [
-                    'attribute' => $attribute['attribute']
-                ]);
+        $keys = array_keys($request->project);
+
+        foreach ($keys as $projectId) {
+            $attribute = $request->project[$projectId];
+
+            if ($attribute != __('app.dropdownIgnore') ) {
+                if (collect($attributes)->where('attribute', $attribute)->count() == 0) {
+                    array_push($attributes, [
+                        'attribute' => $attribute
+                    ]);
+                }
             }
         }
 
@@ -139,7 +145,6 @@ class TogglController extends Controller
                     ]);
             }
 
-            $keys = array_keys($request->project);
             foreach ($keys as $projectId) {
                 $attribute = $request->project[$projectId];
 
