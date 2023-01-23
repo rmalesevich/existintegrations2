@@ -80,6 +80,12 @@ class ExistService
 
         $trakt = app(TraktService::class);
         $trakt->disconnect($user, "Exist disconnect");
+
+        $ynab = app(YnabService::class);
+        $ynab->disconnect($user, "Exist disconnect");
+
+        $toggl = app(TogglService::class);
+        $toggl->disconect($user, "Exist disconnect");
         
         ExistUser::where('id', $user->existUser->id)->delete();
         UserAttribute::where('user_id', $user->id)
