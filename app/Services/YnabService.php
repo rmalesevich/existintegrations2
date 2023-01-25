@@ -100,7 +100,7 @@ class YnabService
             ->delete();
         YnabCategory::where('user_id', $user->id)
             ->delete();
-        YnabUser::where('id', $user->ynabUser->id)
+        YnabUser::where('user_id', $user->id)
             ->delete();
         
         Log::info(sprintf("YNAB DISCONNECT: User ID %s via trigger %s", $user->id, $trigger));

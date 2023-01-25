@@ -107,7 +107,7 @@ class TogglService
             ->delete();
         TogglProject::where('user_id', $user->id)
             ->delete();
-        TogglUser::where('id', $user->togglUser->id)
+        TogglUser::where('user_id', $user->id)
             ->delete();
         
         Log::info(sprintf("TOGGL DISCONNECT: User ID %s via trigger %s", $user->id, $trigger));

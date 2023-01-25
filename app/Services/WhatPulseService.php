@@ -80,7 +80,7 @@ class WhatPulseService
         UserAttribute::where('user_id', $user->id)
             ->where('integration', 'whatpulse')
             ->delete();
-        WhatPulseUser::where('id', $user->whatPulseUser->id)
+        WhatPulseUser::where('user_id', $user->id)
             ->delete();
         
         Log::info(sprintf("WHATPULSE DISCONNECT: User ID %s via trigger %s", $user->id, $trigger));

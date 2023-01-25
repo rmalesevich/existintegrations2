@@ -87,7 +87,7 @@ class TraktService
         UserAttribute::where('user_id', $user->id)
             ->where('integration', 'trakt')
             ->delete();
-        TraktUser::where('id', $user->traktUser->id)
+        TraktUser::where('user_id', $user->id)
             ->delete();
         
         Log::info(sprintf("TRAKT DISCONNECT: User ID %s via trigger %s", $user->id, $trigger));
