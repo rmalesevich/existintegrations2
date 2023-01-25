@@ -85,7 +85,7 @@ class ExistService
         $ynab->disconnect($user, "Exist disconnect");
 
         $toggl = app(TogglService::class);
-        $toggl->disconect($user, "Exist disconnect");
+        $toggl->disconnect($user, "Exist disconnect");
         
         ExistUser::where('id', $user->existUser->id)->delete();
         UserAttribute::where('user_id', $user->id)
