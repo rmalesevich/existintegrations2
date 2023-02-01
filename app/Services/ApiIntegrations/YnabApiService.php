@@ -126,7 +126,7 @@ class YnabApiService extends AbstractApiService
     }
 
     /**
-     * Retrieve the Categories for the user for the last-used budget from the YNAB API.
+     * Retrieve the Categories for the user for the default budget from the YNAB API.
      * Reference URL: https://api.youneedabudget.com/v1#/Categories/getCategories
      * 
      * @param User $user
@@ -136,7 +136,7 @@ class YnabApiService extends AbstractApiService
     {
         $apiRequest = new ApiRequestDTO(
             method: 'GET',
-            uri: config('services.ynab.baseUri') . '/budgets/last-used/categories',
+            uri: config('services.ynab.baseUri') . '/budgets/default/categories',
             params: [
                 'headers' => [
                     'Content-Type' => 'application/json',
@@ -167,7 +167,7 @@ class YnabApiService extends AbstractApiService
     {
         $apiRequest = new ApiRequestDTO(
             method: 'GET',
-            uri: config('services.ynab.baseUri') . '/budgets/last-used/transactions?since_date=' . $sinceDate,
+            uri: config('services.ynab.baseUri') . '/budgets/default/transactions?since_date=' . $sinceDate,
             params: [
                 'headers' => [
                     'Content-Type' => 'application/json',
