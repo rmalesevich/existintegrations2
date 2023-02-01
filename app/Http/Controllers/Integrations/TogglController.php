@@ -138,7 +138,7 @@ class TogglController extends Controller
         if ($setAttributesResponse->success) {
             $successMessage = __('app.attributeSuccess');
 
-            if (auth()->user()->ynabUser->is_new) {
+            if (auth()->user()->togglUser->is_new) {
                 TogglUser::where('user_id', auth()->user()->id)
                     ->update([
                         'is_new' => false
