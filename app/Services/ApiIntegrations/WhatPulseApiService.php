@@ -49,6 +49,8 @@ class WhatPulseApiService extends AbstractApiService
 
         $pulseResponse = $this->request($apiRequest);
         if ($pulseResponse->success && $pulseResponse->responseBody !== null) {
+            if (Arr::exists($pulseResponse->responseBody, 'error')) return null;
+            
             return WhatPulsePulseDTO::fromRequest($pulseResponse->responseBody);
         } else {
             return null;
