@@ -6,6 +6,7 @@ use App\Objects\ApiRequestDTO;
 use App\Objects\WhatPulse\WhatPulsePulseDTO;
 use App\Objects\WhatPulse\WhatPulseUserDTO;
 use App\Services\AbstractApiService;
+use Illuminate\Support\Arr;
 
 class WhatPulseApiService extends AbstractApiService
 {
@@ -50,7 +51,7 @@ class WhatPulseApiService extends AbstractApiService
         $pulseResponse = $this->request($apiRequest);
         if ($pulseResponse->success && $pulseResponse->responseBody !== null) {
             if (Arr::exists($pulseResponse->responseBody, 'error')) return null;
-            
+
             return WhatPulsePulseDTO::fromRequest($pulseResponse->responseBody);
         } else {
             return null;
