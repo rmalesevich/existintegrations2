@@ -67,7 +67,7 @@ class TogglProcessor extends Command
             $maxDate = date("Y-m-d", strtotime("-$days days"));
 
             UserData::where('user_id', $user->id)
-                ->where('service', 'ynab')
+                ->where('service', 'toggl')
                 ->where('date_id', '<', $maxDate)
                 ->delete();
         }
