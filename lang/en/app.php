@@ -42,6 +42,9 @@ return [
     'manageIntegrationText' => 'Manage :service Settings',
     'dropdownIgnore' => 'Ignore',
 
+    // EXIST ERRORS
+    'existUnauthorized' => 'Authorized revoked with Exist. Service has been disconnected.',
+
     // WHATPULSE ERRORS
     'whatpulsePulseError' => 'Error loading the pulses for this user',
     

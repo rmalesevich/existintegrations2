@@ -134,6 +134,44 @@ class ExistService
     }
 
     /**
+     * Check Exist User to ensure we can contine. To be called before the processor calls each service.
+     * 
+     * @param User $user
+     * @return StandardDTO
+     */
+    public function checkExistUser(User $user): StandardTO
+    {
+        $ownedAttributesResponse = $this->api->getOwnedAttributes($user);
+        if ($ownedAttributesResponse === null) {
+            $unauthorizedCount = ServiceLog::where('user_id', $user->id)
+                ->where('service', 'exist')
+                ->where('unauthorized', true)
+                ->whereNull('message')
+                ->count();
+
+            if ($unauthorizedCount > 0) {
+                ServiceLog::where('user_id', $user->id)
+                    ->where('service', 'trakt')
+                    ->where('unauthorized', true)
+                    ->whereNull('message')
+                    ->update(['message' => 'Authorization revoked']);
+
+                $this->disconnect($user, "Authorization revoked", true);
+            }
+
+            return new StandardDTO(
+                success: false,
+                message: __('app.existUnauthorized')
+            );
+
+        }
+        
+        return new StandardDTO(
+            success: true
+        );
+    }
+
+    /**
      * Get the Account Profile from Exist and persist it in the database for the passed in user.
      * 
      * @param User $user
