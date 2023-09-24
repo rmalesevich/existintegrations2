@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Models\UserAttribute;
 use App\Models\UserData;
 use App\Objects\Exist\ExistStatusDTO;
+use App\Objects\Exist\ExistAttributesOwnedDTO;
 use App\Objects\StandardDTO;
 use App\Services\ApiIntegrations\ExistApiService;
 use Carbon\Carbon;
