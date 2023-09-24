@@ -51,6 +51,11 @@ class YnabProcessor extends Command
             ->get();
 
         foreach ($users as $user) {
+            $existCheckResponse = $exist->checkExistUser($user);
+            if (!$existCheckResponse->success) {
+                continue;
+            }
+            
             $response = $ynab->processTransactions($user);
             if (!$response->success) {
                 continue;
