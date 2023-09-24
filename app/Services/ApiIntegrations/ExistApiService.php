@@ -9,6 +9,7 @@ use App\Objects\Exist\ExistAccountProfileDTO;
 use App\Objects\Exist\ExistAttributeDTO;
 use App\Objects\Exist\ExistOAuthTokenDTO;
 use App\Objects\Exist\ExistStatusDTO;
+use App\Objects\Exist\ExistAttributesOwnedDTO;
 use App\Services\AbstractApiService;
 
 class ExistApiService extends AbstractApiService
