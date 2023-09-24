@@ -6,6 +6,7 @@ use App\Models\ExistUser;
 use App\Models\User;
 use App\Models\UserAttribute;
 use App\Models\UserData;
+use App\Models\ServiceLog;
 use App\Objects\Exist\ExistStatusDTO;
 use App\Objects\Exist\ExistAttributesOwnedDTO;
 use App\Objects\StandardDTO;
