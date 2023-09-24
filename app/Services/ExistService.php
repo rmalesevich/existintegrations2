@@ -140,7 +140,7 @@ class ExistService
      * @param User $user
      * @return StandardDTO
      */
-    public function checkExistUser(User $user): StandardTO
+    public function checkExistUser(User $user): StandardDTO
     {
         $ownedAttributesResponse = $this->api->getOwnedAttributes($user);
         if ($ownedAttributesResponse === null) {
