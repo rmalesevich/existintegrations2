@@ -3,6 +3,7 @@
 namespace App\Services\ApiIntegrations;
 
 use App\Models\User;
+use App\Models\ServiceLog;
 use App\Objects\ApiRequestDTO;
 use App\Objects\Exist\ExistAccountProfileDTO;
 use App\Objects\Exist\ExistAttributeDTO;
@@ -114,6 +115,41 @@ class ExistApiService extends AbstractApiService
         $accountProfileResponse = $this->request($apiRequest);
         if ($accountProfileResponse->success && $accountProfileResponse->responseBody !== null) {
             return new ExistAccountProfileDTO($accountProfileResponse->responseBody);
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * Retrieve the Owned Attributes by the user and the service
+     * Documentation Reference: https://developer.exist.io/reference/attribute_ownership/#list-owned-attributes
+     * 
+     * @param User $user
+     * @return ExistAttributesOwnedDTO
+     */
+    public function getOwnedAttributes(User $user): ?ExistAttributesOwnedDTO
+    {
+        $apiRequest = new ApiRequestDTO(
+            method: 'GET',
+            uri: config('services.exist.baseUri') . '/attributes/owned/',
+            params: [
+                'headers' => [
+                    'Authorization' => 'Bearer ' . $user->existUser->access_token
+                ]
+            ]
+        );
+
+        $ownedAttributesResponse = $this->request($apiRequest);
+        if ($ownedAttributesResponse->success && $ownedAttributesResponse->responseBody !== null) {
+            return new ExistAttributesOwnedDTO($ownedAttributesResponse->responseBody);
+        } else if (!$ownedAttributesResponse->success && $ownedAttributesResponse->statusCode == 401) {
+            ServiceLog::create([
+                'user_id' => $user->id,
+                'service' => 'exist',
+                'unauthorized' => true
+            ]);
+
+            return null;
         } else {
             return null;
         }

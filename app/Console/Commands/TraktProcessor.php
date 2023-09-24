@@ -51,6 +51,11 @@ class TraktProcessor extends Command
             ->get();
 
         foreach ($users as $user) {
+            $existCheckResponse = $exist->checkExistUser($user);
+            if (!$existCheckResponse->success) {
+                continue;
+            }
+            
             $response = $trakt->processHistory($user);
             if (!$response->success) {
                 continue;
