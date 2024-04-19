@@ -2,6 +2,8 @@
 
 Laravel application that connects disparate data sources with [Exist.io](https://exist.io).
 
+As of 2024-APR-20, Exist Integrations will cease to function. There are some logical errors based on the various APIs and I've had no time to work on it. It's unfortunate that I couldn't get a longer runway or alternative scripts to run, but for my situation I needed to get this off my plate. The repository is archived and read-only so you can use it for the basis of your own integrations to Exist.
+
 ## .env setup
 
 To connect to the various services that use OAuth 2.0, you will need to add the following parameters to support the Client ID and Client Secret.
